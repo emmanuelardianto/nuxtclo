@@ -1,15 +1,15 @@
 <template>
     <div>
         <b-card
-            title="Card Title"
-            img-src="https://picsum.photos/600/300/?image=25"
-            img-alt="Image"
+            :title="product.name"
+            :img-src="product.image_url"
+            :img-alt="product.name"
             img-top
             tag="article"
             class="my-2"
         >
             <b-card-text>
-            Some quick example text to build on the card title and make up the bulk of the card's content.
+            {{ product.description }}
             </b-card-text>
 
             <b-button href="#" variant="primary">Go somewhere</b-button>
@@ -19,7 +19,7 @@
 
 <script>
 export default {
-
+    props: [ 'product' ]
 }
 </script>
 
