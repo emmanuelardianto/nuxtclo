@@ -18,7 +18,7 @@
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
-            <b-nav-form>
+            <b-nav-form class="mr-3">
               <b-input-group>
                   <b-form-input squared placeholder="Search"></b-form-input>
                   <b-input-group-append>
@@ -30,14 +30,6 @@
             <b-nav-item href="#"><i class="far fa-user"></i></b-nav-item>
             <b-nav-item href="#"><i class="far fa-heart"></i></b-nav-item>
             <b-nav-item href="#"><i class="fa fa-shopping-cart"></i></b-nav-item>
-
-            <!-- <b-nav-item-dropdown right>
-              <template #button-content>
-                <em>User</em>
-              </template>
-              <b-dropdown-item href="#">Profile</b-dropdown-item>
-              <b-dropdown-item href="#">Sign Out</b-dropdown-item>
-            </b-nav-item-dropdown> -->
           </b-navbar-nav>
         </b-collapse>
       </b-container>
