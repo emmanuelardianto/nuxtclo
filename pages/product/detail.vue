@@ -22,7 +22,7 @@
             <h1 class="mb-4">オーバーサイズクルーネックT（半袖）</h1>
             <b-row class="mb-3">
                 <b-col cols="6" class="price">¥1,000</b-col>
-                <b-col cols="6" class="text-right"><FrontProductRating /></b-col>
+                <b-col cols="6" class="text-right mt-auto"><FrontProductRating /></b-col>
             </b-row>
             <div class="mb-3 pb-3 border-bottom">上品な風合いが新しいビッグシルエットTシャツ。洗練されたカジュアルが楽しめる1枚。</div>
             <div class="mb-3">
@@ -55,7 +55,16 @@
         </b-col>
         <b-col cols="12" lg="7" md="6">
             <h4 class="border-bottom pb-3">この商品について</h4>
-            <FrontCollapse v-for="detail in productDetails" :key="detail.title" :title="detail.title" :content="detail.content" />
+            <div class="mb-3"><FrontCollapse v-for="detail in productDetails" :key="detail.title" :title="detail.title" :content="detail.content" /></div>
+            <b-row class="border-bottom py-3 no-gutters">
+                <b-col cols="6"><h4>お客様のレビュー</h4></b-col>
+                <b-col cols="6" class="text-right mt-auto"><FrontProductRating /></b-col>
+            </b-row>
+            <b-row class="border-bottom py-3 no-gutters">
+                <b-col cols="6" class="font-weight-bold">お客様のレビュー</b-col>
+                <b-col cols="6" class="text-right mt-auto"><a href="#">レビューを書く</a></b-col>
+            </b-row>
+            <FrontProductTestimony />
         </b-col>
     </b-row>
   </div>

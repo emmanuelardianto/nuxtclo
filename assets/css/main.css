@@ -33,3 +33,7 @@ body {
   padding: 15px 0;
   font-size: 1.2em;
 }
+
+a {
+  color: inherit;
+}
