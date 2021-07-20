@@ -32,6 +32,8 @@
             <b-nav-item href="#"><i class="fa fa-shopping-cart"></i></b-nav-item>
           </b-navbar-nav>
         </b-collapse>
+        <b-navbar-nav class="ml-auto">
+        </b-navbar-nav>
       </b-container>
     </b-navbar>
   </div>
