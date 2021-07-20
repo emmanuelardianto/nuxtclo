@@ -10,10 +10,7 @@
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item href="#">Women</b-nav-item>
-            <b-nav-item href="#">Men</b-nav-item>
-            <b-nav-item href="#">Kids</b-nav-item>
-            <b-nav-item href="#">Baby</b-nav-item>
+            <b-nav-item href="#" v-for="menu in menus" :key="menu" class="font-weight-bold text-uppercase">{{ menu }}</b-nav-item>
           </b-navbar-nav>
 
           <!-- Right aligned nav items -->
@@ -41,7 +38,16 @@
 
 <script>
 export default {
-
+  data() {
+    return {
+      menus: [
+        "women",
+        "men",
+        "kids",
+        "baby"
+      ]
+    }
+  }
 }
 </script>
 

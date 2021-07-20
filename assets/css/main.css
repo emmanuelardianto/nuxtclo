@@ -1,3 +1,35 @@
+body {
+  font-family: "Open Sans", sans-serif;
+  font-size: 13px;
+  color: #3d3d3d;
+}
 .text-underline {
   text-decoration: underline;
+}
+
+.btn.btn-primary {
+  background: #f00;
+  border-color: #f00;
+}
+
+.btn.btn-primary:hover {
+  background: #ff5959;
+}
+
+.btn-primary:focus,
+.btn-primary.focus {
+  box-shadow: none;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #ff5959;
+  border-color: #ff5959;
+}
+
+.btn-lg {
+  padding: 15px 0;
+  font-size: 1.2em;
 }

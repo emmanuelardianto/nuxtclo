@@ -39,6 +39,12 @@ export default {
 a.product-item {
     display: block;
     color: #3d3d3d;
+    text-decoration: none;
+    padding: 10px;
+    border: 1px solid #FFFFFF;
+}
+a.product-item:hover {
+    border: 1px solid #3d3d3d;
 }
 .product-item .color {
     width: 15px;
