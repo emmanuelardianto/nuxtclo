@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { API_URL } = process.env;
+import i18n from './config/i18n'
 
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -35,6 +36,7 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
+    
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -42,7 +44,25 @@ export default {
     // https://go.nuxtjs.dev/bootstrap
     'bootstrap-vue/nuxt',
     ['@nuxtjs/axios'],
-    '@nuxtjs/dotenv'
+    '@nuxtjs/dotenv',
+    [
+      'nuxt-i18n',
+      {
+        vueI18nLoader: true,
+        defaultLocale: 'jp',
+        locales: [
+          {
+            code: 'en',
+            name: 'English'
+          },
+          {
+            code: 'jp',
+            name: 'Japanese'
+          }
+        ],
+        vueI18n: i18n
+      }
+    ]
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
@@ -51,6 +71,5 @@ export default {
 
   env: {
     API_URL
-  }
-  
+  },
 }

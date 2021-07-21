@@ -17,14 +17,19 @@
           <b-navbar-nav class="ml-auto">
             <b-nav-form class="mr-3">
               <b-input-group>
-                  <b-form-input squared placeholder="Search"></b-form-input>
+                  <b-form-input squared :placeholder="$t('search')"></b-form-input>
                   <b-input-group-append>
                     <b-button squared variant="outline-secondary"><i class="fa fa-search"></i></b-button>
                   </b-input-group-append>
               </b-input-group>
             </b-nav-form>
             <b-nav-item href="#"><i class="fa fa-store"></i></b-nav-item>
-            <b-nav-item href="#"><i class="far fa-user"></i></b-nav-item>
+            <b-nav-item-dropdown right>
+              <template slot="button-content">
+                <i class="far fa-user"></i>
+              </template>
+              <b-dropdown-item href="#">{{ $t('login') }}</b-dropdown-item>
+            </b-nav-item-dropdown>
             <b-nav-item href="#"><i class="far fa-heart"></i></b-nav-item>
             <b-nav-item href="#"><i class="fa fa-shopping-cart"></i></b-nav-item>
           </b-navbar-nav>
