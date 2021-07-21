@@ -6,19 +6,37 @@
                 <p class="mb-3">{{ $t('registrationInfo') }}</p>
                 <div class="border py-4 px-4">
                     <h4 class="mb-3">{{ $t('register') }}</h4>
-                    <div role="group">
-                        <label for="input-live">Name:</label>
-                        <b-form-input
-                        id="input-live"
-                        v-model="email"
-                        aria-describedby="input-live-help input-live-feedback"
-                        placeholder="Enter your name"
-                        trim
-                        ></b-form-input>
-                        <b-form-invalid-feedback id="input-live-feedback">
-                        Enter at least 3 letters
-                        </b-form-invalid-feedback>
-                        <b-form-text id="input-live-help">Your full name.</b-form-text>
+                    <div class="mb-3">
+                        <label for="input-live">{{ $t('email') }}</label>
+                        <b-form-input placeholder="name@nextclo.com" type="email"></b-form-input>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input-live">{{ $t('emailCheck') }}</label>
+                        <b-form-input placeholder="name@nextclo.com" type="email"></b-form-input>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input-live">{{ $t('password') }}</label>
+                        <b-form-input placeholder="8 or more" type="password"></b-form-input>
+                    </div>
+                    <div class="mb-3">
+                        <b-form-checkbox>{{ $t('showPassword')}}</b-form-checkbox>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input-live">{{ $t('zipcode') }}</label>
+                        <b-form-input type="text"></b-form-input>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input-live">{{ $t('birthdate') }}</label>
+                        <b-form-input type="date"></b-form-input>
+                    </div>
+                    <div class="mb-3">
+                        <label for="input-live">{{ $t('gender') }}</label>
+                        <b-form-checkbox>{{ $t('male')}}</b-form-checkbox>
+                        <b-form-checkbox>{{ $t('female')}}</b-form-checkbox>
+                        <b-form-checkbox>{{ $t('other')}}</b-form-checkbox>
+                    </div>
+                    <div class="mb-3">
+                        <b-button variant="dark" size="lg">{{ $t('toConfirmationPage')}}</b-button>
                     </div>
                 </div>
             </b-col>

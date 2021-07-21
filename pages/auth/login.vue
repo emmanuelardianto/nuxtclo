@@ -1,5 +1,5 @@
 <template>
-    <div class="container py-3 px-3 border my-5">
+    <div class="container py-4 px-3 border my-5">
         <b-row>
             <b-col cols="12" md="6">
                 <h5 class="mb-3">{{ $t('login') }}</h5>
