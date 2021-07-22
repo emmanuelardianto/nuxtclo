@@ -1,6 +1,6 @@
 <template>
   <div>
-      <b-navbar toggleable="lg" type="light" class="bg-white">
+    <b-navbar toggleable="lg" type="light" class="bg-white" sticky>
       <b-container>
         <b-navbar-brand href="#">
           <img src="~/assets/header.svg" alt="logo" title="uniqlo">
@@ -26,7 +26,7 @@ export default {
           },
           {
               name: this.$t("product"),
-              url: "/admin/user"
+              url: "/admin/product"
           },
           {
               name: this.$t("category"),
