@@ -12,12 +12,30 @@
                 </b-input-group>
             </b-col>
         </b-row>
-        <b-table striped hover bordered :items="products"></b-table>
+        <b-table striped hover bordered :items="users" class="mb-3"></b-table>
+        <b-row>
+            <b-col cols="6">
+                <b-pagination
+                v-model="currentPage"
+                :total-rows="rows"
+                :per-page="perPage"
+                ></b-pagination>
+            </b-col>
+            <b-col cols="6" class="text-right">
+                <b-button-group>
+                    <b-button 
+                        v-for="show in showDataSelections" 
+                        :key="show" 
+                        @click="perPage = show" 
+                        :variant="perPage == show ? 'primary' : 'light'">{{ show }}</b-button>
+                </b-button-group>
+            </b-col>
+        </b-row>
     </div>
 </template>
 
 <script>
-import ProductAPI from '@/api/product';
+import UserAPI from '@/api/user';
 export default {
     layout: 'admin',
     layout (context) {
@@ -25,12 +43,41 @@ export default {
     },
     data() {
         return {
-            products : []
+            users : [],
+            isLoading: false,
+            currentPage: 1,
+            rows: 0,
+            perPage: 10,
+            showDataSelections: [
+                10, 20, 50, 100
+            ]
         }
     },
-    // async fetch() {
-    //   this.products = await ProductAPI.getList();
-    // }
+    async fetch() {
+        await this.getData();
+    },
+    watch: {
+        async currentPage() {
+            await this.getData();
+        },
+        async perPage() {
+            await this.getData();
+        }
+    },
+    methods: {
+        async getData() {
+            try {
+                this.isLoading = true;
+                const { data } = await UserAPI.getList({ page: this.currentPage, per_page: this.perPage }); 
+                this.users = data.data.data;
+                this.rows = data.data.total;
+                this.isLoading = false;
+                window.scrollTo(0,0);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
 }
 </script>
 

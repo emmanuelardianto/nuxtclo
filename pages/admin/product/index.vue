@@ -72,6 +72,7 @@ export default {
                 this.products = data.data.data;
                 this.rows = data.data.total;
                 this.isLoading = false;
+                window.scrollTo(0,0);
             } catch (error) {
                 console.log(error);
             }
