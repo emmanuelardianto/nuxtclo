@@ -1,7 +1,7 @@
 <template>
     <div class="container">
-        <div class="float-right"><NuxtLink to="/admin/user/update" class="btn btn-primary">Create</NuxtLink></div>
-        <h2>{{ $t('user') }}</h2>
+        <div class="float-right"><NuxtLink to="/admin/category/update" class="btn btn-primary">Create</NuxtLink></div>
+        <h2>{{ $t('category') }}</h2>
         <b-row class="my-3">
             <b-col lg="3" md="4" cols="12">
                 <b-input-group>
@@ -14,7 +14,7 @@
         </b-row>
         <BaseLoading v-if="isLoading" />
         <div v-else>
-            <b-table striped hover bordered :items="users" class="mb-3" empty-text></b-table>
+            <b-table striped hover bordered :items="categories" class="mb-3" empty-text></b-table>
         </div>
         <b-row>
             <b-col cols="6">
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import UserAPI from '@/api/user';
+import CategoryAPI from '@/api/category';
 export default {
     layout: 'admin',
     layout (context) {
@@ -46,7 +46,7 @@ export default {
     },
     data() {
         return {
-            users : [],
+            categories : [],
             isLoading: false,
             currentPage: 1,
             rows: 0,
@@ -54,7 +54,8 @@ export default {
             showDataSelections: [
                 10, 20, 50, 100
             ],
-            search: ''
+            search: '',
+            timer: null
         }
     },
     async fetch() {
@@ -81,12 +82,12 @@ export default {
         async getData() {
             try {
                 this.isLoading = true;
-                const { data } = await UserAPI.getList({ 
+                const { data } = await CategoryAPI.getList({ 
                     page: this.currentPage, 
                     per_page: this.perPage, 
                     search: this.search 
                 }); 
-                this.users = data.data.data;
+                this.categories = data.data.data;
                 this.rows = data.data.total;
                 this.isLoading = false;
             } catch (error) {

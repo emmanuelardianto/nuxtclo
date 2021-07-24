@@ -30,7 +30,7 @@ export default {
           },
           {
               name: this.$t("category"),
-              url: "/admin/user"
+              url: "/admin/category"
           },
           {
               name: this.$t("transaction"),
