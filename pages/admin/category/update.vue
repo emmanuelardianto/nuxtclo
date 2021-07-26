@@ -6,7 +6,8 @@
                 <b-alert :show="alert != ''" variant="danger" class="mb-3">{{ alert }}</b-alert>
                 <div class="form-group mb-3">
                     <label for="name">{{ $t('name') }}</label>
-                    <b-form-input v-model="name"></b-form-input>
+                    <b-form-input v-model.trim="$v.name.$model"></b-form-input>
+                    <span class="text-danger" ></span>
                 </div>
                 <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="dark" squared class="mb-3">{{ $t('save') }}</b-button>
@@ -18,6 +19,8 @@
 
 <script>
 import CategoryAPI from '@/api/category';
+import { required, minLength } from 'vuelidate/lib/validators';
+
 export default {
     layout: 'admin',
     layout (context) {
@@ -29,19 +32,20 @@ export default {
             alert: ""
         }
     },
-    methods: {
-        checkForm() {
-            if(this.name || this.name.length <= 0) {
-                this.alert = 'Name is required';
-                return false;
-            }
-            return true;
+    validations: {
+        name: {
+            required,
+            minLength: minLength(4)
         },
+    },
+    methods: {
         async save() {
             try {
-                if(!this.checkForm())
+                this.$v.$touch()
+                if (this.$v.$invalid) {
+                    this.alert = "Error";
                     return;
-
+                }
                 const { data } = await CategoryAPI.create({
                     name: this.name
                 });

@@ -14,7 +14,7 @@
         </b-row>
         <BaseLoading v-if="isLoading" />
         <div v-else>
-            <b-table striped hover bordered :items="users" class="mb-3" empty-text></b-table>
+            <b-table striped hover bordered :items="users" responsive class="mb-3" empty-text></b-table>
         </div>
         <b-row>
             <b-col cols="6">

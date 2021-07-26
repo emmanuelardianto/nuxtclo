@@ -12,9 +12,23 @@
                 </b-input-group>
             </b-col>
         </b-row>
-        <BaseLoading v-if="isLoading" />
+        <b-skeleton-table
+        :rows="5"
+        :columns="4"
+        :table-props="{ bordered: true, striped: true }"
+        v-if="isLoading"
+        ></b-skeleton-table>
+
         <div v-else>
-            <b-table striped hover bordered :items="categories" class="mb-3" empty-text></b-table>
+            <b-table 
+                striped 
+                hover 
+                bordered 
+                :items="categories" 
+                class="mb-3"
+                responsive 
+                empty-text>
+            </b-table>
         </div>
         <b-row>
             <b-col cols="6">
