@@ -28,6 +28,9 @@
                 class="mb-3"
                 responsive 
                 empty-text>
+                <template #cell(id)="data">
+                    <a :href="'/admin/category/' + data.value">{{ data.value }}</a>
+                </template>
             </b-table>
         </div>
         <b-row>

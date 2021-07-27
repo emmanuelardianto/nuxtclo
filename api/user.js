@@ -8,4 +8,13 @@ export default {
   create(param) {
     return clientAPI().post('/user/create', param);
   },
+  update(param) {
+    return clientAPI().post('/user/update', param);
+  },
+  delete(param) {
+    return clientAPI().post('/user/delete', param);
+  },
+  getById(param) {
+    return clientAPI().get('/user/' + param);
+  },
 };

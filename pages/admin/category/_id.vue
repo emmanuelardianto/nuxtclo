@@ -11,6 +11,8 @@
                 </div>
                 <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="dark" squared class="mb-3">{{ $t('save') }}</b-button>
+                    <b-button size="lg" v-if="isUpdate" variant="danger" squared class="mb-3" @click="deleteData">{{ $t('delete') }}</b-button>
+                    <b-button size="lg" variant="secondary" squared class="mb-3" @click="$router.push('/admin/category')">{{ $t('cancel') }}</b-button>
                 </div>
             </b-col>
         </b-row>
@@ -38,6 +40,19 @@ export default {
             minLength: minLength(4)
         },
     },
+    async asyncData({ params }) { 
+        if(params.id === 'update') {
+            return {
+                isUpdate: false
+            }
+        }
+        const { data } = await CategoryAPI.getById(params.id); 
+        return {
+            id: data.data.id,
+            name: data.data.name,
+            isUpdate: true
+        }
+    },
     methods: {
         async save() {
             try {
@@ -53,6 +68,20 @@ export default {
                 if(data.success) {
                     alert('Successfuly created data');
                     this.$router.push('/admin/category')
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async deleteData() {
+            try {
+                if(confirm(this.$t("Do you really want to delete?"))){ 
+                    const { data } = await CategoryAPI.delete({ id: this.id }); 
+
+                    if(data.success) {
+                        alert('Successfuly deleted data.');
+                        this.$router.push('/admin/category')
+                    }
                 }
             } catch (error) {
                 console.log(error);
