@@ -1,6 +1,6 @@
 <template>
   <div>
     <AdminNavbar />
-    <Nuxt />
+    <Nuxt style="margin-top: 80px;" />
   </div>
 </template>

@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="float-right"><NuxtLink to="/admin/user/update" class="btn btn-primary">Create</NuxtLink></div>
+        <div class="float-right"><NuxtLink to="/admin/user/create" class="btn btn-primary">Create</NuxtLink></div>
         <h2>{{ $t('user') }}</h2>
         <b-row class="my-3">
             <b-col lg="3" md="4" cols="12">
