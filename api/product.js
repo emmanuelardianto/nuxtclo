@@ -5,4 +5,7 @@ export default {
     const q = new URLSearchParams(param).toString()
     return clientAPI().get('/product?' + q);
   },
+  getAssets() {
+    return clientAPI().get('/product/get-product-assets');
+  }
 };
