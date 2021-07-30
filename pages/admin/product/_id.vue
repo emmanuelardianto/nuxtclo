@@ -42,7 +42,7 @@
                         ></b-form-textarea>
                 </div>
                 <h4>Variants</h4>
-                <div class="form-group pb-3 border-bottom">
+                <div class="form-group pb-3">
                     <b-form-group v-slot="{ ariaDescribedby }">
                     <b-form-checkbox-group
                         id="checkbox-group-1"
@@ -52,16 +52,36 @@
                     ></b-form-checkbox-group>
                     </b-form-group>
                 </div>
-                <div class="form-group pb-3 mb-3 border-bottom" v-if="selectedVariants.indexOf('color') != -1">
-                    <label for="description">{{ $t('color') }}</label>
-                    <AdminProductVariantColor :colors="colors" @selectColor="selectColor" />
-                </div>
-                <div class="form-group pb-3 mb-3 border-bottom" v-if="selectedVariants.indexOf('size') != -1">
-                    <label for="description">{{ $t('size') }}</label>
-                    <AdminProductVariantSize :sizes="sizes" @selectSize="selectSize" />
-                </div>
-                <div>
-                    <b-table :items="variantData"></b-table>
+                <b-row>
+                    <b-col cols="6">
+                        <div class="form-group pb-3 mb-3" v-if="selectedVariants.indexOf('color') != -1">
+                            <label for="description">{{ $t('color') }}</label>
+                            <AdminProductVariantColor :colors="colors" @selectColor="selectColor" />
+                        </div>
+                    </b-col>
+                    <b-col cols="6">
+                        <div class="form-group pb-3 mb-3" v-if="selectedVariants.indexOf('size') != -1">
+                            <label for="description">{{ $t('size') }}</label>
+                            <AdminProductVariantSize :sizes="sizes" @selectSize="selectSize" />
+                        </div>
+                    </b-col>
+                </b-row>
+                <div class="mb-5">
+                    <b-table 
+                        :fields="variantFields"
+                        :items="variantData"
+                        :select-mode="selectMode"
+                        selectable
+                        @row-selected="onRowSelected"
+                        >
+                        <template #cell(price)="data">
+                            <b-form-input :value="data.value"></b-form-input>
+                        </template>
+                        <template #cell(qty)="data">
+                            <b-form-input :value="data.value"></b-form-input>
+                        </template>
+                    </b-table>
+                    <b-button variant="outline-danger" @click="removeRow" size="sm" v-if="variantData.length > 0" :disabled="variantSelected.length == 0">{{ $t('Remove Selected') }}</b-button>
                 </div>
                 <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="primary" squared class="mb-3">{{ $t('save') }}</b-button>
@@ -115,7 +135,14 @@ export default {
             selectedColors: [],
             sizes: [],
             selectedSizes: [],
-            variantData: []
+            variantData: [],
+            variantFields: [
+                { key: 'variant', label: 'Variant Name' },
+                { key: 'price', label: 'Price' },
+                { key: 'qty', label: 'Qty' },
+            ] ,
+            variantSelected: [],
+            selectMode: 'multi',
         }
     },
     validations: {
@@ -130,7 +157,6 @@ export default {
                 isUpdate: false
             }
         }
-        // const { data } = await ProductAPI.getAssets(params.id); 
         return {
             isUpdate: true
         }
@@ -154,6 +180,12 @@ export default {
         }
     },
     methods: {
+        onRowSelected(items) {
+            this.variantSelected = items
+        },
+        removeRow() {
+            this.variantData = this.variantData.filter(x => !this.variantSelected.includes(x));
+        },
         async save() {
             try {
                 this.$v.$touch()
@@ -193,14 +225,36 @@ export default {
             this.selectedSizes.push(size);
         },
         generateVariant() {
-            this.variantData = this.selectedColors.map(function(item) {
-                return this.selectedSizes.map(function(size) {
+            this.variantData = [];
+            const colors = [...new Set(this.selectedColors)];
+            const sizes = [...new Set(this.selectedSizes)];
+            if(colors.length > 0 && sizes.length > 0) {
+                colors.forEach(color => {
+                    sizes.forEach(size => {
+                        this.variantData.push({
+                            variant: color.name + ' - ' + size.name,
+                            price: 0,
+                            qty: 0
+                        });
+                    });
+                });
+            } else if(colors.length > 0) {
+                this.variantData = colors.map(function(color) {
                     return {
-                        color: item,
-                        size: size
+                        variant: color.name,
+                        price: 0,
+                        qty: 0
                     }
-                }, this);
-            }, this);
+                });
+            } else if(sizes.length > 0) {
+                this.variantData = sizes.map(function(size) {
+                    return {
+                        variant: size.name,
+                        price: 0,
+                        qty: 0
+                    }
+                });
+            }
         }
     }
 }
