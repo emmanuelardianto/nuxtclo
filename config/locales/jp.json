@@ -30,5 +30,7 @@
   "save": "保存",
   "delete": "削除",
   "Do you really want to delete?": "データを削除しますか。",
-  "cancel": "キャンセル"
+  "cancel": "キャンセル",
+  "description": "説明",
+  "price": "金額"
 }

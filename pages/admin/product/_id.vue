@@ -17,15 +17,18 @@
                     </b-form-select>
                 </div>
                 <div class="form-group mb-3">
-                    <b-form-group :label="$t('gender')" v-slot="{ ariaDescribedby }">
-                        <b-form-radio-group
+                    <b-form-group
+                        :label="$t('gender')"
+                        v-slot="{ ariaDescribedby }"
+                        >
+                        <b-form-checkbox-group
                             v-model="gender"
                             :options="genders"
                             :aria-describedby="ariaDescribedby"
-                            name="radios-btn-default"
+                            name="buttons-1"
                             buttons
-                            button-variant="outline-primary"
-                        ></b-form-radio-group>
+                            button-variant="primary"
+                        ></b-form-checkbox-group>
                     </b-form-group>
                 </div>
                 <div class="form-group mb-3">
@@ -56,13 +59,13 @@
                     <b-col cols="6">
                         <div class="form-group pb-3 mb-3" v-if="selectedVariants.indexOf('color') != -1">
                             <label for="description">{{ $t('color') }}</label>
-                            <AdminProductVariantColor :colors="colors" @selectColor="selectColor" />
+                            <AdminProductVariantColor :colors="colors" @updateSelected="updateSelectedColor"  />
                         </div>
                     </b-col>
                     <b-col cols="6">
                         <div class="form-group pb-3 mb-3" v-if="selectedVariants.indexOf('size') != -1">
                             <label for="description">{{ $t('size') }}</label>
-                            <AdminProductVariantSize :sizes="sizes" @selectSize="selectSize" />
+                            <AdminProductVariantSize :sizes="sizes" @updateSelected="updateSelectedSize" />
                         </div>
                     </b-col>
                 </b-row>
@@ -106,17 +109,8 @@ export default {
         return {
             categories: [],
             category: "",
-            genders: [
-                {
-                    text: "Female",
-                    value: "female"
-                },
-                {
-                    text: "Male",
-                    value: "male"
-                }
-            ],
-            gender: "",
+            genders: [],
+            gender: [],
             name: "",
             description: "",
             alert: "",
@@ -164,9 +158,10 @@ export default {
     async fetch() {
         try {
             const { data } = await ProductAPI.getAssets();
-            this.categories = data.data.categories;
+            this.categories = data.data.categories; 
             this.colors = data.data.colors;
             this.sizes = data.data.sizes;
+            this.genders = data.data.genders;
         } catch (error) {
             console.log(error);
         }
@@ -218,11 +213,11 @@ export default {
                 console.log(error);
             }
         },
-        selectColor(color) {
-            this.selectedColors.push(color);
+        updateSelectedColor(colors) {
+            this.selectedColors = colors;
         },
-        selectSize(size) {
-            this.selectedSizes.push(size);
+        updateSelectedSize(sizes) {
+            this.selectedSizes = sizes;
         },
         generateVariant() {
             this.variantData = [];
@@ -234,7 +229,8 @@ export default {
                         this.variantData.push({
                             variant: color.name + ' - ' + size.name,
                             price: 0,
-                            qty: 0
+                            qty: 0,
+                            status: 1
                         });
                     });
                 });
@@ -243,7 +239,8 @@ export default {
                     return {
                         variant: color.name,
                         price: 0,
-                        qty: 0
+                        qty: 0,
+                        status: 1
                     }
                 });
             } else if(sizes.length > 0) {
@@ -251,7 +248,8 @@ export default {
                     return {
                         variant: size.name,
                         price: 0,
-                        qty: 0
+                        qty: 0,
+                        status: 1
                     }
                 });
             }

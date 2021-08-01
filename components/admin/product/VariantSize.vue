@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="filter-box" v-for="size in sizes" :key="size.value" @click="selectSize(size)">
+    <div class="filter-box" :class="selected.indexOf(size) != -1 ? 'active' : ''" v-for="size in sizes" :key="size.value" @click="selectSize(size)">
         <div class="inner">{{ size.name }}</div>
     </div>
   </div>
@@ -9,9 +9,19 @@
 <script>
 export default {
     props: ["sizes"],
+    data() {
+        return {
+            selected: []
+        }
+    },
     methods: {
         selectSize(size) {
-            this.$emit("selectSize", size);
+            if(this.selected.indexOf(size) != -1)
+                this.selected.splice(this.selected.indexOf(size), 1);
+            else
+                this.selected.push(size);
+                
+            this.$emit("updateSelected", this.selected);
         }
     }
 }
