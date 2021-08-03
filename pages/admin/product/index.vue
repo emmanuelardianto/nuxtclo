@@ -14,7 +14,18 @@
         </b-row>
         <BaseLoading v-if="isLoading" />
         <div v-else>
-            <b-table striped hover bordered :items="products" class="mb-3" empty-text></b-table>
+            <b-table 
+                striped 
+                hover 
+                bordered 
+                :fields="productFields"
+                :items="products" 
+                class="mb-3" 
+                empty-text>
+                <template #cell(id)="data">
+                    <a :href="'/admin/product/' + data.value">{{ products[data.index].name }}</a>
+                </template>
+            </b-table>
         </div>
         <b-row>
             <b-col cols="6">
@@ -54,7 +65,12 @@ export default {
             showDataSelections: [
                 10, 20, 50, 100
             ],
-            search: ''
+            search: '',
+            productFields: [
+                { key: 'id', label: 'Name' },
+                { key: 'category.name', label: 'Category' },
+                { key: 'gender', label: 'Gender' },
+            ],
         }
     },
     async fetch() {

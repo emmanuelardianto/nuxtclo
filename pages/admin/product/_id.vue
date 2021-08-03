@@ -21,14 +21,14 @@
                         :label="$t('gender')"
                         v-slot="{ ariaDescribedby }"
                         >
-                        <b-form-checkbox-group
+                        <b-form-radio-group
                             v-model="gender"
                             :options="genders"
                             :aria-describedby="ariaDescribedby"
                             name="buttons-1"
                             buttons
                             button-variant="primary"
-                        ></b-form-checkbox-group>
+                        ></b-form-radio-group>
                     </b-form-group>
                 </div>
                 <div class="form-group mb-3">
@@ -76,19 +76,19 @@
                         :select-mode="selectMode"
                         selectable
                         @row-selected="onRowSelected"
+                        v-if="variantData.length > 0"
                         >
                         <template #cell(price)="data">
-                            <b-form-input :value="data.value"></b-form-input>
+                            <b-form-input type="number" v-model="variantData[data.index].price"></b-form-input>
                         </template>
                         <template #cell(qty)="data">
-                            <b-form-input :value="data.value"></b-form-input>
+                            <b-form-input type="number" v-model="variantData[data.index].qty"></b-form-input>
                         </template>
                     </b-table>
                     <b-button variant="outline-danger" @click="removeRow" size="sm" v-if="variantData.length > 0" :disabled="variantSelected.length == 0">{{ $t('Remove Selected') }}</b-button>
                 </div>
                 <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="primary" squared class="mb-3">{{ $t('save') }}</b-button>
-                    <b-button size="lg" v-if="isUpdate" variant="danger" squared class="mb-3" @click="deleteData">{{ $t('delete') }}</b-button>
                     <b-button size="lg" variant="secondary" squared class="mb-3" @click="$router.push('/admin/category')">{{ $t('cancel') }}</b-button>
                 </div>
             </b-col>
@@ -131,10 +131,10 @@ export default {
             selectedSizes: [],
             variantData: [],
             variantFields: [
-                { key: 'variant', label: 'Variant Name' },
+                { key: 'type_name', label: 'Type Name' },
                 { key: 'price', label: 'Price' },
                 { key: 'qty', label: 'Qty' },
-            ] ,
+            ],
             variantSelected: [],
             selectMode: 'multi',
         }
@@ -151,7 +151,20 @@ export default {
                 isUpdate: false
             }
         }
+        const { data } = await ProductAPI.getById(params.id);
+        let selectedVariants = [];
+        if(data.variant_type.includes('color')) 
+            selectedVariants.push('color');
+        
+        if(data.variant_type.includes('size')) 
+            selectedVariants.push('size');
         return {
+            category: data.category_id,
+            gender: data.gender,
+            name: data.name,
+            description: data.description,
+            selectedVariants: selectedVariants,
+            variantData: data.product_variants,
             isUpdate: true
         }
     },
@@ -188,13 +201,22 @@ export default {
                     this.alert = "Error";
                     return;
                 }
-                const { data } = await CategoryAPI.create({
-                    name: this.name
-                });
+                let payload = {
+                    category: this.category,
+                    gender: this.gender,
+                    name: this.name,
+                    variant_type: this.selectedVariants.join(''),
+                    description: this.description,
+                    variants: this.variantData
+                }
+                console.log(payload);
+                const { data } = await ProductAPI.create(payload);
 
                 if(data.success) {
                     alert('Successfuly created data');
-                    this.$router.push('/admin/category')
+                    this.$router.push('/admin/product')
+                } else {
+                    alert('Failed to save data');
                 }
             } catch (error) {
                 console.log(error);
@@ -227,7 +249,8 @@ export default {
                 colors.forEach(color => {
                     sizes.forEach(size => {
                         this.variantData.push({
-                            variant: color.name + ' - ' + size.name,
+                            type_name: color.name + ' - ' + size.name,
+                            type_value: color.value + size.value,
                             price: 0,
                             qty: 0,
                             status: 1
@@ -237,7 +260,8 @@ export default {
             } else if(colors.length > 0) {
                 this.variantData = colors.map(function(color) {
                     return {
-                        variant: color.name,
+                        type_name: color.name,
+                        type_value: color.value,
                         price: 0,
                         qty: 0,
                         status: 1
@@ -246,7 +270,8 @@ export default {
             } else if(sizes.length > 0) {
                 this.variantData = sizes.map(function(size) {
                     return {
-                        variant: size.name,
+                        type_name: size.name,
+                        type_value: size.value,
                         price: 0,
                         qty: 0,
                         status: 1
