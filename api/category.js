@@ -17,4 +17,7 @@ export default {
   getById(param) {
     return clientAPI().get('/category/' + param);
   },
+  getWithProduct(param) {
+    return clientAPI().post('/category/get-with-product', param);
+  },
 };

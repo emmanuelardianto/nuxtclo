@@ -19,12 +19,12 @@
             </b-carousel>
         </b-col>
         <b-col cols="12" lg="4" md="12">
-            <h1 class="mb-4">{{ $t('message') }}</h1>
+            <h1 class="mb-4">{{ product.name }}</h1>
             <b-row class="mb-3">
                 <b-col cols="6" class="price">¥1,000</b-col>
                 <b-col cols="6" class="text-right align-self-center"><FrontProductRating /></b-col>
             </b-row>
-            <div class="mb-3 pb-3 border-bottom">上品な風合いが新しいビッグシルエットTシャツ。洗練されたカジュアルが楽しめる1枚。</div>
+            <div class="mb-3 pb-3 border-bottom">{{ product.description }}</div>
             <div class="mb-3">
                 <div class="mb-2"><b>カラー</b>: 65 BLUE</div>
                 <div class="filter-box" :class="color == '#FFF' ? 'active' : ''" v-for="color in colors" :key="color">
@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import ProductAPI from '@/api/product';
 export default {
     layout: 'default',
     layout (context) {

@@ -1,13 +1,13 @@
 <template>
     <b-container>
 		<BaseBreadcrumb class="mb-5" />
-		<h3 class="mb-3">トップス</h3>
+		<h3 class="mb-3" v-if="category">{{ category.name }}</h3>
         <FrontProductGenderTab />
 		<FrontSmallCarousel :items="carousel" class="mb-5" />
 		<b-row class="mb-4">
 			<b-col cols="6" xl="2" lg="3" md="4">
 				<small class="font-weight-bold">結果</small>
-				<div class="my-2">80</div>
+				<div class="my-2">{{ pagination.total }}</div>
 			</b-col>
 			<b-col cols="6" xl="7" md="5" lg="6" class="d-none d-md-none d-lg-block">
 				<small class="font-weight-bold">適用済みフィルター</small>
@@ -29,14 +29,14 @@
 				<div>
 					<h5>カテゴリー</h5>
 					<div class="pl-3">
-						<a href="#" class="text-dark d-block py-2" v-for="category in categories" :key="category">{{ category }}</a>
+						<a :href="'/category/' + category.id" class="text-dark d-block py-2" v-for="category in categories" :key="category.id">{{ category.name }}</a>
 					</div>
 				</div>
 			</b-col>
             <b-col cols="12" xl="10" lg="9" md="8">
 				<b-row>
 					<b-col cols="6" lg="3" md="4" v-for="product in products" :key="product.id">
-						<FrontProductItem :product="products" />
+						<FrontProductItem :product="product" />
 					</b-col>
 				</b-row>
             </b-col>
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import ProductAPI from '@/api/product';
+import CategoryAPI from '@/api/category';
 export default {
     layout: 'default',
     layout (context) {
@@ -68,17 +68,13 @@ export default {
 				title : "Airism",
 				},
 			],
-			categories: [
-				'Category 1',
-				'Category 2',
-				'Category 3',
-				'Category 4',
-				'Category 5',
-				'Category 6',
-				'Category 7',
-			],
             products: [],
+            categories: [],
             category_id: null,
+            category: null,
+            pagination: {
+                total: 0
+            }
         }
     },
     async asyncData({ params }) { 
@@ -88,16 +84,25 @@ export default {
     },
     async fetch() {
         await this.getData();
+        await this.getCategory();
     },
     methods: {
         async getData() {
             try {
-                this.isLoading = true;
-                const { data } = await ProductAPI.getList({ 
-                    category_id: this.category_id
+                const { data } = await CategoryAPI.getWithProduct({ 
+                    id: this.category_id
                 }); 
-                this.products = data.data.data;
-                this.isLoading = false;
+                this.products = data.data.products.data;
+                this.pagination.total = data.data.products.total;
+                this.category = data.data;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async getCategory() {
+            try {
+                const { data } = await CategoryAPI.getList(); 
+                this.categories = data.data.data;
             } catch (error) {
                 console.log(error);
             }
