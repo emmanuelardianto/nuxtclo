@@ -117,7 +117,14 @@ export default {
       onSlideEnd(slide) {
         this.sliding = false
       }
-    }
+    },
+    async asyncData({ params }) { 
+        const { data } = await ProductAPI.getById(params.id);
+            
+        return {
+            product: data
+        }
+    },
 }
 </script>
 

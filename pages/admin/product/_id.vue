@@ -35,7 +35,7 @@
                     <label for="name">{{ $t('name') }}</label>
                     <b-form-input v-model.trim="$v.name.$model"></b-form-input>
                 </div>
-                <div class="form-group pb-3 mb-3 border-bottom">
+                <div class="form-group mb-5">
                     <label for="description">{{ $t('description') }}</label>
                     <b-form-textarea
                         v-model="description"
@@ -43,6 +43,15 @@
                         rows="3"
                         max-rows="6"
                         ></b-form-textarea>
+                </div>
+                <div v-if="isUpdate">
+                    <h4>Gallery</h4>
+                    <b-row class="mb-5">
+                        <b-col xl="2" lg="3" md="4">
+                            b-form
+                            <b-button variant="secondary">Add</b-button>
+                        </b-col>
+                    </b-row>
                 </div>
                 <h4>Variants</h4>
                 <div class="form-group pb-3">
@@ -158,6 +167,7 @@ export default {
         
         if(data.variant_type.includes('size')) 
             selectedVariants.push('size');
+            
         return {
             category: data.category_id,
             gender: data.gender,

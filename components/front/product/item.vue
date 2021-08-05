@@ -1,6 +1,6 @@
 <template>
     <a href="#" class="product-item mb-5">
-        <img :src="product.image" :title="product.name" :alt="product.name" class="w-100 mb-2" />
+        <img :src="require('~/assets/front/product-01.webp')" :title="product.name" :alt="product.name" class="w-100 mb-2" />
         <div class="mb-2">
             <div class="color" style="background: #F00;"></div>
             <div class="color" style="background: #0F0;"></div>
