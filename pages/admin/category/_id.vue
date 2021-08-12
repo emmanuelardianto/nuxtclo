@@ -10,6 +10,21 @@
                     <span class="text-danger" ></span>
                 </div>
                 <div class="form-group mb-3">
+                    <b-form-group
+                        :label="$t('gender')"
+                        v-slot="{ ariaDescribedby }"
+                        >
+                        <b-form-checkbox-group
+                            v-model="gender"
+                            :options="genders"
+                            :aria-describedby="ariaDescribedby"
+                            name="buttons-1"
+                            buttons
+                            button-variant="primary"
+                        ></b-form-checkbox-group>
+                    </b-form-group>
+                </div>
+                <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="dark" squared class="mb-3">{{ $t('save') }}</b-button>
                     <b-button size="lg" v-if="isUpdate" variant="danger" squared class="mb-3" @click="deleteData">{{ $t('delete') }}</b-button>
                     <b-button size="lg" variant="secondary" squared class="mb-3" @click="$router.push('/admin/category')">{{ $t('cancel') }}</b-button>
@@ -21,6 +36,7 @@
 
 <script>
 import CategoryAPI from '@/api/category';
+import ProductAPI from '@/api/product';
 import { required, minLength } from 'vuelidate/lib/validators';
 
 export default {
@@ -31,7 +47,9 @@ export default {
     data() {
         return {
             name: "",
-            alert: ""
+            alert: "",
+            genders: [],
+            gender: [],
         }
     },
     validations: {
@@ -50,6 +68,7 @@ export default {
         return {
             id: data.data.id,
             name: data.data.name,
+            gender: data.data.gender ? data.data.gender : [],
             isUpdate: true
         }
     },
@@ -61,12 +80,22 @@ export default {
                     this.alert = "Error";
                     return;
                 }
-                const { data } = await CategoryAPI.create({
-                    name: this.name
-                });
+                let result = null;
+                const payload = {
+                    id: this.id,
+                    name: this.name,
+                    gender: this.gender
+                }
+
+                if(this.isUpdate) {
+                    result = await CategoryAPI.update(payload);
+                } else {
+                    result = await CategoryAPI.create(payload);
+                }
+                const { data } = result;
 
                 if(data.success) {
-                    alert('Successfuly created data');
+                    alert('Successfuly updated data');
                     this.$router.push('/admin/category')
                 }
             } catch (error) {
@@ -87,7 +116,15 @@ export default {
                 console.log(error);
             }
         }
-    }
+    },
+    async fetch() {
+        try {
+            const { data } = await ProductAPI.getAssets();
+            this.genders = data.data.genders;
+        } catch (error) {
+            console.log(error);
+        }
+    },
 }
 </script>
 
