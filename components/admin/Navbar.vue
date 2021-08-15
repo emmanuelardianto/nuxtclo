@@ -36,6 +36,10 @@ export default {
               name: this.$t("transaction"),
               url: "/admin/user"
           },
+          {
+              name: this.$t("variant"),
+              url: "/admin/variant"
+          },
       ]
     }
   }
