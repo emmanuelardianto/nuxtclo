@@ -5,10 +5,7 @@
         <b-row class="my-3">
             <b-col lg="3" md="4" cols="12">
                 <b-input-group>
-                    <b-form-input v-model="search"></b-form-input>
-                    <b-input-group-append>
-                        <b-button variant="light"><i class="fa fa-search"></i></b-button>
-                    </b-input-group-append>
+                    <b-form-select v-model="filter" :options="filters"></b-form-select>
                 </b-input-group>
             </b-col>
         </b-row>
@@ -79,6 +76,12 @@ export default {
                 { key: 'text', label: 'Text' },
                 { key: 'value', label: 'Value' },
             ],
+            filters: [
+                { text: 'All', value: '' },
+                { text: 'Color', value: 'color' },
+                { text: 'Size', value: 'size' },
+            ],
+            filter: ""
         }
     },
     async fetch() {
@@ -91,14 +94,8 @@ export default {
         async perPage() {
             await this.getData();
         },
-        async search() {
-            if (this.timer) {
-                clearTimeout(this.timer);
-                this.timer = null;
-            }
-            this.timer = setTimeout(() =>  {
-                this.getData();
-            }, 800);
+        async filter() {
+            await this.getData();
         }
     },
     methods: {
@@ -108,7 +105,7 @@ export default {
                 const { data } = await ProductVariantRefAPI.getList({ 
                     page: this.currentPage, 
                     per_page: this.perPage, 
-                    search: this.search 
+                    search: this.filter 
                 }); 
                 this.items = data.data.data;
                 this.rows = data.data.total;
@@ -116,7 +113,7 @@ export default {
             } catch (error) {
                 console.log(error);
             }
-        }
+        },
     }
 }
 </script>
