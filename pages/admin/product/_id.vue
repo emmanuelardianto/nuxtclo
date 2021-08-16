@@ -87,6 +87,9 @@
                         @row-selected="onRowSelected"
                         v-if="variantData.length > 0"
                         >
+                        <template #cell(id)="data">
+                            <span>{{ variantNameConcat(variantData[data.index]) }}</span>
+                        </template>
                         <template #cell(price)="data">
                             <b-form-input type="number" v-model="variantData[data.index].price"></b-form-input>
                         </template>
@@ -140,7 +143,7 @@ export default {
             selectedSizes: [],
             variantData: [],
             variantFields: [
-                { key: 'type_name', label: 'Type Name' },
+                { key: 'id', label: 'Variant' },
                 { key: 'price', label: 'Price' },
                 { key: 'qty', label: 'Qty' },
             ],
@@ -259,8 +262,10 @@ export default {
                 colors.forEach(color => {
                     sizes.forEach(size => {
                         this.variantData.push({
-                            type_name: color.name + ' - ' + size.name,
-                            type_value: color.value + size.value,
+                            variant_type1: color.name,
+                            variant_value1: color.id,
+                            variant_type2: size.name,
+                            variant_value2: size.id,
                             price: 0,
                             qty: 0,
                             status: 1
@@ -270,8 +275,10 @@ export default {
             } else if(colors.length > 0) {
                 this.variantData = colors.map(function(color) {
                     return {
-                        type_name: color.name,
-                        type_value: color.value,
+                        variant_type1: color.name,
+                        variant_value1: color.id,
+                        variant_type2: '',
+                        variant_value2: '',
                         price: 0,
                         qty: 0,
                         status: 1
@@ -280,14 +287,34 @@ export default {
             } else if(sizes.length > 0) {
                 this.variantData = sizes.map(function(size) {
                     return {
-                        type_name: size.name,
-                        type_value: size.value,
+                        variant_type1: size.name,
+                        variant_value1: size.id,
+                        variant_type2: '',
+                        variant_value2: '',
                         price: 0,
                         qty: 0,
                         status: 1
                     }
                 });
             }
+        },
+        variantNameConcat(data) {
+            console.log(data);
+            let name = '';
+            if(data.variant_type1 == 'color') {
+                let color = this.colors.filter(x => x.id == data.variant_value1);
+                name = color.length > 0 ? color[0].text : 'undefined';
+            } else if(data.variant_type1 == 'size') {
+                let size = this.sizes.filter(x => x.id == data.variant_value1);
+                name = size.length > 0 ? size[0].text : 'undefined';
+            }
+
+            if(data.variant_type2 == 'size' ) {
+                let size = this.sizes.filter(x => x.id == data.variant_value2);
+                name += size.length > 0 ? ' - ' + size[0].text : 'undefined';
+            }
+                
+            return name;
         }
     }
 }

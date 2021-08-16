@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="filter-box" :class="selected.indexOf(size) != -1 ? 'active' : ''" v-for="size in sizes" :key="size.value" @click="selectSize(size)">
-        <div class="inner">{{ size.name }}</div>
+    <div class="filter-box" :class="selected.indexOf(size) != -1 ? 'active' : ''" v-for="size in sizes" :key="size.id" @click="selectSize(size)">
+        <div class="inner">{{ size.text }}</div>
     </div>
   </div>
 </template>

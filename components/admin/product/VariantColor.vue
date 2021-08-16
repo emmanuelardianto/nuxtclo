@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="filter-box" :class="selected.indexOf(color) != -1 ? 'active' : ''" v-for="color in colors" :key="color.name" @click="selectColor(color)">
-        <div class="inner" :style="'background: ' + color.hex + ';'"></div>
+    <div class="filter-box" :class="selected.indexOf(color) != -1 ? 'active' : ''" v-for="color in colors" :key="color.id" @click="selectColor(color)">
+        <div class="inner" :style="'background: #' + color.value + ';'"></div>
     </div>
   </div>
 </template>
