@@ -11,6 +11,9 @@ export default {
   create(payload) {
     return clientAPI().post(prefix + '/create', payload);
   },
+  update(payload) {
+    return clientAPI().post(prefix + '/update', payload);
+  },
   getById(param) {
     return clientAPI().get(prefix + '/' + param);
   },

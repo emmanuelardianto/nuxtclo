@@ -119,6 +119,7 @@ export default {
     },
     data() {
         return {
+            id: null,
             categories: [],
             category: "",
             genders: [],
@@ -173,6 +174,7 @@ export default {
             selectedVariants.push('size');
 
         return {
+            id: data.id,
             category: data.category_id,
             gender: data.gender,
             name: data.name,
@@ -227,6 +229,7 @@ export default {
                     return;
                 }
                 let payload = {
+                    id: this.id,
                     category: this.category,
                     gender: this.gender,
                     name: this.name,
@@ -234,7 +237,13 @@ export default {
                     description: this.description,
                     variants: this.variantTableData
                 }
-                const { data } = await ProductAPI.create(payload);
+                let result = null;
+                if(this.isUpdate) {
+                    result = await ProductAPI.update(payload);
+                } else {
+                    result = await ProductAPI.create(payload);
+                }
+                const { data } = result;
 
                 if(data.success) {
                     alert('Successfuly created data');
