@@ -21,7 +21,7 @@
                 </div>
                 <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="dark" squared class="mb-3">{{ $t('save') }}</b-button>
-                    <b-button size="lg" variant="secondary" squared class="mb-3" @click="$router.push('/admin/variabt')">{{ $t('cancel') }}</b-button>
+                    <b-button size="lg" variant="secondary" squared class="mb-3" @click="$router.push('/admin/variant')">{{ $t('cancel') }}</b-button>
                 </div>
             </b-col>
         </b-row>

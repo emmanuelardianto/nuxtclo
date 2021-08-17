@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="filter-box" :class="selected.indexOf(color) != -1 ? 'active' : ''" v-for="color in colors" :key="color.id" @click="selectColor(color)">
+    <div class="filter-box" :class="isSelected(color.id) ? 'active' : ''" v-for="color in colors" :key="color.id" @click="selectColor(color)">
         <div class="inner" :style="'background: #' + color.value + ';'"></div>
     </div>
   </div>
@@ -8,20 +8,31 @@
 
 <script>
 export default {
-    props: ["colors"],
+    props: ["colors", "exists"],
     data() {
         return {
             selected: []
         }
     },
+    mounted() {
+        this.selected = this.exists.map(function(obj) {
+            return obj.variant_value1
+        });
+    },
     methods: {
         selectColor(color) {
-            if(this.selected.indexOf(color) != -1)
-                this.selected.splice(this.selected.indexOf(color), 1);
+            if(this.exists.filter(x => x.variant_value1 == color.id).length > 0) 
+                return;
+
+            if(this.selected.indexOf(color.id) != -1)
+                this.selected.splice(this.selected.indexOf(color.id), 1);
             else
-                this.selected.push(color);
+                this.selected.push(color.id);
                 
             this.$emit("updateSelected", this.selected);
+        },
+        isSelected(colorId) {
+            return this.selected.indexOf(colorId) != -1;
         }
     }
 }

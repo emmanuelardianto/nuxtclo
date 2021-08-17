@@ -68,36 +68,36 @@
                     <b-col cols="6">
                         <div class="form-group pb-3 mb-3" v-if="selectedVariants.indexOf('color') != -1">
                             <label for="description">{{ $t('color') }}</label>
-                            <AdminProductVariantColor :colors="colors" @updateSelected="updateSelectedColor"  />
+                            <AdminProductVariantColor :colors="colors" @updateSelected="updateSelectedColor" :exists="variantData"  />
                         </div>
                     </b-col>
                     <b-col cols="6">
                         <div class="form-group pb-3 mb-3" v-if="selectedVariants.indexOf('size') != -1">
                             <label for="description">{{ $t('size') }}</label>
-                            <AdminProductVariantSize :sizes="sizes" @updateSelected="updateSelectedSize" />
+                            <AdminProductVariantSize :sizes="sizes" @updateSelected="updateSelectedSize" :exists="variantData" />
                         </div>
                     </b-col>
                 </b-row>
                 <div class="mb-5">
                     <b-table 
                         :fields="variantFields"
-                        :items="variantData"
+                        :items="variantTableData"
                         :select-mode="selectMode"
                         selectable
                         @row-selected="onRowSelected"
-                        v-if="variantData.length > 0"
+                        v-if="variantTableData.length > 0"
                         >
                         <template #cell(id)="data">
-                            <span>{{ variantNameConcat(variantData[data.index]) }}</span>
+                            <span>{{ variantNameConcat(variantTableData[data.index]) }}</span>
                         </template>
                         <template #cell(price)="data">
-                            <b-form-input type="number" v-model="variantData[data.index].price"></b-form-input>
+                            <b-form-input type="number" v-model="variantTableData[data.index].price"></b-form-input>
                         </template>
                         <template #cell(qty)="data">
-                            <b-form-input type="number" v-model="variantData[data.index].qty"></b-form-input>
+                            <b-form-input type="number" v-model="variantTableData[data.index].qty"></b-form-input>
                         </template>
                     </b-table>
-                    <b-button variant="outline-danger" @click="removeRow" size="sm" v-if="variantData.length > 0" :disabled="variantSelected.length == 0">{{ $t('Remove Selected') }}</b-button>
+                    <b-button variant="outline-danger" @click="removeRow" size="sm" v-if="variantTableData.length > 0" :disabled="variantSelected.length == 0">{{ $t('Remove Selected') }}</b-button>
                 </div>
                 <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="primary" squared class="mb-3">{{ $t('save') }}</b-button>
@@ -142,6 +142,7 @@ export default {
             sizes: [],
             selectedSizes: [],
             variantData: [],
+            variantTableData: [],
             variantFields: [
                 { key: 'id', label: 'Variant' },
                 { key: 'price', label: 'Price' },
@@ -170,7 +171,7 @@ export default {
         
         if(data.variant_type.includes('size')) 
             selectedVariants.push('size');
-            
+
         return {
             category: data.category_id,
             gender: data.gender,
@@ -188,6 +189,17 @@ export default {
             this.colors = data.data.colors;
             this.sizes = data.data.sizes;
             this.genders = data.data.genders;
+
+            this.variantData.forEach(item => {
+                if(item.variant_type1 == 'color')
+                    this.selectedColors.push(this.colors.filter(x => x.id == item.variant_value1)[0]);
+                else if(item.variant_type1 == 'size')
+                    this.selectedSizes.push(this.sizes.filter(x => x.id == item.variant_value1)[0]);
+                if(item.variant_type2 == 'size')
+                    this.selectedSizes.push(this.sizes.filter(x => x.id == item.variant_value2)[0]);
+            });
+            console.log("this.selectedColors", this.selectedColors);
+
         } catch (error) {
             console.log(error);
         }
@@ -205,7 +217,7 @@ export default {
             this.variantSelected = items
         },
         removeRow() {
-            this.variantData = this.variantData.filter(x => !this.variantSelected.includes(x));
+            this.variantTableData = this.variantTableData.filter(x => !this.variantSelected.includes(x));
         },
         async save() {
             try {
@@ -220,9 +232,8 @@ export default {
                     name: this.name,
                     variant_type: this.selectedVariants.join(''),
                     description: this.description,
-                    variants: this.variantData
+                    variants: this.variantTableData
                 }
-                console.log(payload);
                 const { data } = await ProductAPI.create(payload);
 
                 if(data.success) {
@@ -249,31 +260,39 @@ export default {
             }
         },
         updateSelectedColor(colors) {
-            this.selectedColors = colors;
+            this.selectedColors = [];
+            colors.forEach(colorId => {
+                this.selectedColors.push(this.colors.filter(x => x.id == colorId)[0]);
+            });
         },
         updateSelectedSize(sizes) {
-            this.selectedSizes = sizes;
+            this.selectedSizes = [];
+            sizes.forEach(sizeId => {
+                this.selectedSizes.push(this.sizes.filter(x => x.id == sizeId)[0]);
+            });
         },
         generateVariant() {
-            this.variantData = [];
+            this.variantTableData = [];
             const colors = [...new Set(this.selectedColors)];
             const sizes = [...new Set(this.selectedSizes)];
             if(colors.length > 0 && sizes.length > 0) {
                 colors.forEach(color => {
                     sizes.forEach(size => {
-                        this.variantData.push({
+                        let exists = this.variantData.filter(x => x.variant_value1 == color.id && x.variant_value2 == size.id)
+                        this.variantTableData.push({
+                            id: exists.length > 0 ? exists[0].id : null,
                             variant_type1: color.name,
                             variant_value1: color.id,
                             variant_type2: size.name,
                             variant_value2: size.id,
-                            price: 0,
-                            qty: 0,
-                            status: 1
+                            price: exists.length > 0 ? exists[0].price : 0,
+                            qty: exists.length > 0 ? exists[0].qty : 0,
+                            status: exists.length > 0 ? exists[0].status : 1
                         });
                     });
                 });
             } else if(colors.length > 0) {
-                this.variantData = colors.map(function(color) {
+                this.variantTableData = colors.map(function(color) {
                     return {
                         variant_type1: color.name,
                         variant_value1: color.id,
@@ -285,7 +304,7 @@ export default {
                     }
                 });
             } else if(sizes.length > 0) {
-                this.variantData = sizes.map(function(size) {
+                this.variantTableData = sizes.map(function(size) {
                     return {
                         variant_type1: size.name,
                         variant_value1: size.id,
@@ -299,7 +318,6 @@ export default {
             }
         },
         variantNameConcat(data) {
-            console.log(data);
             let name = '';
             if(data.variant_type1 == 'color') {
                 let color = this.colors.filter(x => x.id == data.variant_value1);

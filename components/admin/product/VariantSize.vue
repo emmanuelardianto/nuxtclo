@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="filter-box" :class="selected.indexOf(size) != -1 ? 'active' : ''" v-for="size in sizes" :key="size.id" @click="selectSize(size)">
+    <div class="filter-box" :class="isSelected(size.id) ? 'active' : ''" v-for="size in sizes" :key="size.id" @click="selectSize(size)">
         <div class="inner">{{ size.text }}</div>
     </div>
   </div>
@@ -8,20 +8,31 @@
 
 <script>
 export default {
-    props: ["sizes"],
+    props: ["sizes", "exists"],
     data() {
         return {
             selected: []
         }
     },
+    mounted() {
+        this.selected = this.exists.map(function(obj) {
+            return obj.variant_type1 == 'size' ? obj.variant_value1 : obj.variant_value2;
+        });
+    },
     methods: {
         selectSize(size) {
-            if(this.selected.indexOf(size) != -1)
+            if(this.exists.filter(x => x.variant_type1 == 'size' && (x.variant_value1 == size.id || x.variant_value2)).length > 0) 
+                return;
+
+            if(this.selected.indexOf(size.id) != -1)
                 this.selected.splice(this.selected.indexOf(size), 1);
             else
-                this.selected.push(size);
+                this.selected.push(size.id);
                 
             this.$emit("updateSelected", this.selected);
+        },
+        isSelected(sizeId) {
+            return this.selected.indexOf(sizeId) != -1;
         }
     }
 }
