@@ -21,20 +21,20 @@
         <b-col cols="12" lg="4" md="12">
             <h1 class="mb-4">{{ product.name }}</h1>
             <b-row class="mb-3">
-                <b-col cols="6" class="price">¥1,000</b-col>
+                <b-col cols="6" class="price">{{ selectedVariant ? selectedVariant.price : 'Sold Out' }}</b-col>
                 <b-col cols="6" class="text-right align-self-center"><FrontProductRating /></b-col>
             </b-row>
             <div class="mb-3 pb-3 border-bottom">{{ product.description }}</div>
             <div class="mb-3">
-                <div class="mb-2"><b>カラー</b>: 65 BLUE</div>
-                <div class="filter-box" :class="color == '#FFF' ? 'active' : ''" v-for="color in colors" :key="color">
-                    <div class="inner" :style="'background: ' + color + ';'"></div>
+                <div class="mb-2" v-if="selectedColor"><b>カラー</b>: {{  selectedColor.text }}</div>
+                <div class="filter-box" @click="selectedColor = color" :class="selectedColor == color ? 'active' : ''" v-for="color in colors" :key="color.id">
+                    <div class="inner" :style="'background: #' + color.value + ';'"></div>
                 </div>
             </div>
             <div class="mb-3">
-                <div class="mb-2"><b>サイズ</b>: 男女兼用 M</div>
-                <div class="filter-box" :class="size == 'L' ? 'active' : ''" v-for="size in sizes" :key="size">
-                    <div class="inner">{{ size }}</div>
+                <div class="mb-2" v-if="selectedSize"><b>サイズ</b>: {{ selectedSize.text }}</div>
+                <div class="filter-box" @click="selectedSize = size" :class="selectedSize == size ? 'active' : ''" v-for="size in sizes" :key="size.id">
+                    <div class="inner">{{ size.text }}</div>
                 </div>
             </div>
             <b-row class="mb-3">
@@ -87,6 +87,8 @@ export default {
             colors: [
                 "#000", "#00F", "#0F0", "#F00", "#FFF"
             ],
+            selectedSize: null,
+            selectedColor: null,
             qty: [
                 1,2,3,4,5,6,7,8,9,10
             ],
@@ -108,7 +110,15 @@ export default {
                 require("~/assets/front/product-04.webp"),
                 require("~/assets/front/product-05.webp"),
                 require("~/assets/front/product-06.webp")
-            ]
+            ],
+        }
+    },
+    watch: {
+        selectedSize() {
+
+        },
+        selectedColor() {
+
         }
     },
     methods: {
@@ -117,13 +127,19 @@ export default {
       },
       onSlideEnd(slide) {
         this.sliding = false
+      },
+      selectedVariant() {
+
       }
     },
     async asyncData({ params }) { 
-        const { data } = await ProductAPI.getById(params.id);
-            
+        const { data } = await ProductAPI.getBySlug(params.id);
         return {
-            product: data
+            product: data.data.product,
+            variants: data.data.product.product_variants,
+            selectedVariant: data.data.product.product_variants[0],
+            colors: data.data.assets.filter(x => x.name == 'color'),
+            sizes: data.data.assets.filter(x => x.name == 'size')
         }
     },
 }

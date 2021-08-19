@@ -96,6 +96,9 @@
                         <template #cell(qty)="data">
                             <b-form-input type="number" v-model="variantTableData[data.index].qty"></b-form-input>
                         </template>
+                        <template #cell(status)="data">
+                            <b-form-checkbox v-model="variantTableData[data.index].status" value="1"></b-form-checkbox>
+                        </template>
                     </b-table>
                     <b-button variant="outline-danger" @click="removeRow" size="sm" v-if="variantTableData.length > 0" :disabled="variantSelected.length == 0">{{ $t('Remove Selected') }}</b-button>
                 </div>
@@ -148,6 +151,7 @@ export default {
                 { key: 'id', label: 'Variant' },
                 { key: 'price', label: 'Price' },
                 { key: 'qty', label: 'Qty' },
+                { key: 'status', label: 'Is Active' },
             ],
             variantSelected: [],
             selectMode: 'multi',
@@ -167,20 +171,20 @@ export default {
         }
         const { data } = await ProductAPI.getById(params.id);
         let selectedVariants = [];
-        if(data.variant_type.includes('color')) 
+        if(data.data.product.variant_type.includes('color')) 
             selectedVariants.push('color');
         
-        if(data.variant_type.includes('size')) 
+        if(data.data.product.variant_type.includes('size')) 
             selectedVariants.push('size');
 
         return {
-            id: data.id,
-            category: data.category_id,
-            gender: data.gender,
-            name: data.name,
-            description: data.description,
+            id: data.data.product.id,
+            category: data.data.product.category_id,
+            gender: data.data.product.gender,
+            name: data.data.product.name,
+            description: data.data.product.description,
             selectedVariants: selectedVariants,
-            variantData: data.product_variants,
+            variantData: data.data.product.product_variants,
             isUpdate: true
         }
     },

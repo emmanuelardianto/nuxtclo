@@ -17,4 +17,7 @@ export default {
   getById(param) {
     return clientAPI().get(prefix + '/' + param);
   },
+  getBySlug(param) {
+    return clientAPI().get(prefix + '/detail/' + param);
+  },
 };
