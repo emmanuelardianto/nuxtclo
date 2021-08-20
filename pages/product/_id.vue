@@ -128,9 +128,6 @@ export default {
       onSlideEnd(slide) {
         this.sliding = false
       },
-      selectedVariant() {
-
-      }
     },
     async asyncData({ params }) { 
         const { data } = await ProductAPI.getBySlug(params.id);

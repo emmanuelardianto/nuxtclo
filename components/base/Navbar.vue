@@ -28,7 +28,7 @@
               <template slot="button-content">
                 <i class="far fa-user"></i>
               </template>
-              <b-dropdown-item href="#">{{ $t('login') }}</b-dropdown-item>
+              <b-dropdown-item href="/login">{{ $t('login') }}</b-dropdown-item>
             </b-nav-item-dropdown>
             <b-nav-item href="#"><i class="far fa-heart"></i></b-nav-item>
             <b-nav-item href="#"><i class="fa fa-shopping-cart"></i></b-nav-item>
