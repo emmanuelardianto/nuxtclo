@@ -2,7 +2,7 @@
     <div class="container py-4 px-3 border my-5">
         <b-row>
             <b-col cols="12" md="6">
-                <b-form @submit="login">
+                <b-form @submit.prevent="login">
                     <h5 class="mb-3">{{ $t('login') }}</h5>
                     <p class="mb-3">{{ $t('insertLoginInfo') }}</p>
                     <b-alert variant="danger" :show="alert" dismissible>
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import AuthAPI from '@/api/auth';
+import AuthAPI from '@/api/user';
 export default {
     layout: 'plain',
     layout (context) {
