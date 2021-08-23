@@ -29,7 +29,7 @@
 				<div>
 					<h5>カテゴリー</h5>
 					<div class="pl-3">
-						<a :href="'/category/' + category.id" class="text-dark d-block py-2" v-for="category in categories" :key="category.id">{{ category.name }}</a>
+						<a :href="'/category/' + category.slug" class="text-dark d-block py-2" v-for="category in categories" :key="category.id">{{ category.name }}</a>
 					</div>
 				</div>
 			</b-col>
@@ -71,6 +71,7 @@ export default {
             products: [],
             categories: [],
             category_id: null,
+            slug: '',
             category: null,
             pagination: {
                 total: 0
@@ -79,7 +80,7 @@ export default {
     },
     async asyncData({ params }) { 
         return {
-            category_id: params.id
+            slug: params.slug
         }
     },
     async fetch() {
@@ -90,7 +91,7 @@ export default {
         async getData() {
             try {
                 const { data } = await CategoryAPI.getWithProduct({ 
-                    id: this.category_id
+                    slug: this.slug
                 }); 
                 this.products = data.data.products.data;
                 this.pagination.total = data.data.products.total;
