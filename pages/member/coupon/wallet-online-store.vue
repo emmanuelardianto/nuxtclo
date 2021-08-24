@@ -7,7 +7,7 @@
           </b-col>
           <b-col cols="9">
               <h1>クーポン一覧</h1>
-              <FrontTabNavi page="coupon" name="store" />
+              <FrontTabNavi page="coupon" name="online" />
               <div class="border px-4 py-4">
                   <div class="font-weight-bold mb-3">店舗クーポン</div>
                   <p>2 利用可能クーポン</p>
@@ -66,13 +66,13 @@ export default {
                     title: "J Brand ポップアップストア オープン記念クーポン1",
                     description: "lalala",
                     endDate: "使用期限: 2021/8/31 23:59 JST",
-                    thumbnail : require("~/assets/front/coupon.jpeg"),
+                    thumbnail : require("~/assets/front/coupon-online.jpeg"),
                 },
                 {
                     title: "J Brand ポップアップストア オープン記念クーポン2",
                     description: "lilili",
                     endDate: "使用期限: 2021/8/31 23:59 JST",
-                    thumbnail : require("~/assets/front/coupon.jpeg"),
+                    thumbnail : require("~/assets/front/coupon-online.jpeg"),
                 }
             ],
             selectedCoupon: null,

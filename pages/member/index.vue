@@ -3,7 +3,7 @@
       <BaseBreadcrumb class="mb-5" />
       <b-row>
           <b-col cols="3">
-              <FrontMemberMenu />
+              <FrontMemberMenu name="memberinfo" />
           </b-col>
           <b-col cols="9">
               <h1>会員バーコード</h1>
