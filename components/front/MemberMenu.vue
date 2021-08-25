@@ -74,9 +74,9 @@ export default {
                             link: ""
                         },
                         {
-                            name: "",
+                            name: "address",
                             title: "アドレス帳",
-                            link: ""
+                            link: "/member/addresses"
                         },
                         {
                             name: "",
