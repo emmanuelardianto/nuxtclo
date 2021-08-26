@@ -34,9 +34,9 @@ export default {
                             link: ""
                         },
                         {
-                            name: "",
+                            name: "purchaseHistory",
                             title: "購入商品一覧",
-                            link: ""
+                            link: "/member/purchase/history"
                         },
                         {
                             name: "",
