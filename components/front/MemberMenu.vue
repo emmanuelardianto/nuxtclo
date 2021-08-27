@@ -39,9 +39,9 @@ export default {
                             link: "/member/purchase/history"
                         },
                         {
-                            name: "",
+                            name: "order",
                             title: "オンラインストア注文状況",
-                            link: ""
+                            link: "/member/orders"
                         },
                         {
                             name: "",
