@@ -10,11 +10,11 @@
                     </b-alert>
                     <div role="group" class="mb-3">
                         <label>{{ $t('email') }}</label>
-                        <b-form-input v-model="email" placeholder="email" type="email" required></b-form-input>
+                        <b-form-input v-model="auth.email" placeholder="email" type="email" required></b-form-input>
                     </div>
                     <div role="group" class="mb-3">
                         <label>{{ $t('password') }}</label>
-                        <b-form-input v-model="password" type="password" placeholder="password" required></b-form-input>
+                        <b-form-input v-model="auth.password" type="password" placeholder="password" required></b-form-input>
                     </div>
                     <div role="group" class="mb-3">
                         <b-form-checkbox id="checkbox-1" v-model="status" name="checkbox-1" value="accepted" unchecked-value="not_accepted">
@@ -48,24 +48,29 @@ export default {
             email : "",
             password: "",
             status: false,
-            alert: null
+            alert: null,
+            auth: {
+                email : '',
+                password : '',
+                error :false
+            },
+            processing: false,
         }
     },
     methods: {
         async login() {
+            this.auth.error = false
+            this.processing = true
             try {
-                this.alert = null
-                const { data } = await AuthAPI.login({
-                    email: this.email,
-                    password: this.password
-                });
-                if(data.success) {
-                    alert('login success');
-                } else {
-                    this.alert = data.message;
-                }
-            } catch (error) {
-                this.alert = error;
+                await this.$auth.loginWith('User', { data: this.auth })
+                .then(()=>{
+                    this.processing = false;
+                    this.$router.push('/');
+                })
+            } catch (err) {
+                console.log(err)
+                this.auth.error = true
+                this.processing = false
             }
         }
     }

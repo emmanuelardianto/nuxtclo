@@ -44,6 +44,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/bootstrap
     'bootstrap-vue/nuxt',
+    '@nuxtjs/auth-next',
     ['@nuxtjs/axios'],
     '@nuxtjs/dotenv',
     [
@@ -73,4 +74,37 @@ export default {
   env: {
     API_URL
   },
+
+  axios: {
+    baseURL:  "http://localhost:8001/api", // apiのベースURLを追加 
+},
+auth: {
+    redirect: {
+        login: '/login', 
+        logout: '/login', 
+        callback: false,
+        home: '/home'
+    },
+    strategies: {
+        User: {
+            provider: 'laravel/jwt',
+            url: '/auth',
+            token: {
+                property: 'access_token',
+                maxAge: 60 * 60,
+            },
+            refreshToken: {
+                property: 'access_token',
+                maxAge: 20160 * 60,
+            },
+            
+            endpoints: {
+                login: { url: '/login', method: 'post', propertyName: 'access_token' },
+                logout: { url: '/logout', method: 'post' },
+                refresh: { url: '/refresh', method: 'post' , propertyName: 'access_token'}, 
+                user: { url: '/me', method: 'get', propertyName: false},
+            }
+        }
+    },
+},
 }

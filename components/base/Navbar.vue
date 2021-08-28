@@ -2,7 +2,7 @@
   <div>
       <b-navbar toggleable="lg" type="light" class="bg-white">
       <b-container>
-        <b-navbar-brand href="#">
+        <b-navbar-brand href="/">
           <img src="~/assets/header.svg" alt="logo" title="uniqlo">
         </b-navbar-brand>
 
@@ -29,6 +29,7 @@
                 <i class="far fa-user"></i>
               </template>
               <b-dropdown-item href="/login">{{ $t('login') }}</b-dropdown-item>
+              <b-dropdown-item v-if="this.$auth.loggedIn" @click="logout">{{ $t('logout') }}</b-dropdown-item>
             </b-nav-item-dropdown>
             <b-nav-item href="#"><i class="far fa-heart"></i></b-nav-item>
             <b-nav-item href="#"><i class="fa fa-shopping-cart"></i></b-nav-item>
@@ -51,6 +52,18 @@ export default {
         "kids",
         "baby"
       ]
+    }
+  },
+  methods: {
+    async logout() {
+      try {
+            await this.$auth.logout()
+            .then(()=>{
+                this.$router.push('/login');
+            })
+        } catch (err) {
+            console.log(err)
+        }
     }
   }
 }
