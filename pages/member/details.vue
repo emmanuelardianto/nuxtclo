@@ -12,13 +12,13 @@
                   <b-button class="float-right" size="sm" variant="outline-dark" squared>メールアドレスの変更</b-button>
                   <h5 class="mb-3">会員メールアドレス</h5>
                   <div class="font-weight-bold">メールアドレス</div>
-                  <p>myemail@email.com</p>
+                  <p>{{ this.$auth.user.email }}</p>
                   <div class="border-bottom mb-3"></div>
                   <b-button class="float-right" size="sm" variant="outline-dark" squared>会員情報の変更</b-button>
                   <h5 class="mb-4">会員情報詳細</h5>
-                  <div class="mb-4" v-for="data in userData" :key="data.name">
-                      <div class="font-weight-bold">{{ data.name }}</div>
-                        <p>{{ data.value }}</p>
+                  <div class="mb-4" v-for="(data, key, value) in this.$auth.user" :key="value">
+                      <div class="font-weight-bold">{{ key }}</div>
+                        <p>{{ data }}</p>
                   </div>
               </div>
           </b-col>
@@ -29,6 +29,7 @@
 <script>
 export default {
     layout: 'default',
+    middleware: ['auth'],
     layout (context) {
         return 'default';
     },
@@ -69,6 +70,9 @@ export default {
                 },
             ]
         }
+    },
+    mounted() {
+        console.log(this.$auth.user);
     }
 }
 </script>
