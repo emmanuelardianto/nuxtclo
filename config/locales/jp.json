@@ -32,5 +32,17 @@
   "Do you really want to delete?": "データを削除しますか。",
   "cancel": "キャンセル",
   "description": "説明",
-  "price": "金額"
+  "price": "金額",
+  "first_name": "名",
+  "last_name": "姓",
+  "first_name_kana": "メイ",
+  "last_name_kana": "セイ",
+  "zip_code": "郵便番号",
+  "prefecture": "都道府県",
+  "city": "市区郡町村",
+  "address1": "番地", 
+  "address2": "アパート・マンション・部屋番号",
+  "phone": "電話番号(1)",
+  "mobile_phone": "電話番号(2)",
+  "phone_message": "ご注文内容や配送について、電話またはメールにてご連絡させていただく事があります"
 }
