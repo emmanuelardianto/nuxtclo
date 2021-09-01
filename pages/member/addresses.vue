@@ -22,7 +22,7 @@
                                 東京都荒川区東日暮里１－３－１４０４号パークウェル三ノ輪駅前<br />
                                 {{ address.phone }}
                             </p>
-                            <a href="#" @click="edit(address)">住所を編集する</a> | <a href="#">住所の削除</a> | <a href="#">お届け先住所として設定</a>
+                            <a href="#" @click="edit(address)">住所を編集する</a> | <a href="#" @click="remove(address)">住所の削除</a> | <a href="#">お届け先住所として設定</a>
                       </div>
                   </div>
                   <div v-else class="pb-3">
@@ -123,17 +123,17 @@ export default {
             selectedAddress: null,
             address: {
                 id: null,
-                first_name: "",
-                last_name: "",
-                first_name_kana: "",
-                last_name_kana: "",
-                zip_code: "",
-                prefecture: "",
-                city: "",
-                address1: "",
-                address2: "",
-                phone: "",
-                mobile_phone: "",
+                first_name: "first",
+                last_name: "last",
+                first_name_kana: "sei",
+                last_name_kana: "mei",
+                zip_code: "123123",
+                prefecture: "pre",
+                city: "city",
+                address1: "addresi1",
+                address2: "apato",
+                phone: "123123",
+                mobile_phone: "123123",
             }
         }
     },
@@ -212,17 +212,17 @@ export default {
             this.address =  {
                 id: null,
                 user_id: this.$auth.user.id,
-                first_name: "",
-                last_name: "",
-                first_name_kana: "",
-                last_name_kana: "",
-                zip_code: "",
-                prefecture: "",
-                city: "",
-                address1: "",
-                address2: "",
-                phone: "",
-                mobile_phone: "",
+                first_name: "first",
+                last_name: "last",
+                first_name_kana: "sei",
+                last_name_kana: "mei",
+                zip_code: "123123",
+                prefecture: "pre",
+                city: "city",
+                address1: "addresi1",
+                address2: "apato",
+                phone: "123123",
+                mobile_phone: "123123",
             };
             this.$refs['form-modal'].show();
         },
@@ -230,7 +230,6 @@ export default {
             try {
                 this.isLoading = true;
                 let result = null;
-                console.log(this.address);
                 if(this.address.id != null) {
                     result = await AddressAPI.update(this.address);
                 } else {
@@ -243,6 +242,24 @@ export default {
                     this.getData();
                 } else {
                     alert(data.message);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async remove(address) {
+            try {
+                if(confirm(this.$t("Do you really want to delete?"))){ 
+                    this.isLoading = true;
+                    const { data } = await AddressAPI.delete({
+                        id: address.id
+                    });;
+                    if(data.success) {
+                        alert('Successfuly deleted data');
+                        this.getData();
+                    } else {
+                        alert(data.message);
+                    }
                 }
             } catch (error) {
                 console.log(error);
