@@ -7,11 +7,15 @@
           </b-col>
           <b-col cols="9">
               <h1>アドレス帳</h1>
-              <div class="border px-4 py-4 mb-4">
+              <div class="border px-4 py-4 mb-4" v-if="defaultAddress">
                   <h5 class="mb-3">会員住所</h5>
-                  <div class="font-weight-bold">Ｓｉｔｉｎｊａｋ Ｅｍｍａｎｕｅｌ (シチンジャク エマニュエル) (会員住所)</div>
-                  <p>〒187-0001<br />東京都荒川区東日暮里１－３－１４０４号パークウェル三ノ輪駅前<br />08035032875</p>
-                  <a href="#">会員情報の変更</a> | <a href="#">現在のお届け先</a>
+                  <div class="font-weight-bold">{{ fullname(defaultAddress) }}</div>
+                    <p>
+                        〒{{ defaultAddress.zip_code }}<br />
+                        東京都荒川区東日暮里１－３－１４０４号パークウェル三ノ輪駅前<br />
+                        {{ defaultAddress.phone }}
+                    </p>
+                    <a href="#" @click="edit(defaultAddress)">住所を編集する</a> | <span class="text-muted">現在のお届け先</span>
               </div>
               <div class="border px-4 py-4">
                   <div v-if="addresses && addresses.length > 0">
@@ -22,7 +26,7 @@
                                 東京都荒川区東日暮里１－３－１４０４号パークウェル三ノ輪駅前<br />
                                 {{ address.phone }}
                             </p>
-                            <a href="#" @click="edit(address)">住所を編集する</a> | <a href="#" @click="remove(address)">住所の削除</a> | <a href="#">お届け先住所として設定</a>
+                            <a href="#" @click="edit(address)">住所を編集する</a> | <a href="#" @click="remove(address)">住所の削除</a> | <a href="#" @click="setDefault(address)">お届け先住所として設定</a>
                       </div>
                   </div>
                   <div v-else class="pb-3">
@@ -134,7 +138,8 @@ export default {
                 address2: "apato",
                 phone: "123123",
                 mobile_phone: "123123",
-            }
+            },
+            defaultAddress: null
         }
     },
     validations: {
@@ -196,6 +201,11 @@ export default {
                     user_id: this.$auth.user.id
                 }); 
                 this.addresses = data.data;
+                this.defaultAddress = data.data.filter(x => x.default)[0];
+                if(!this.defaultAddress) {
+                    this.defaultAddress = data.data[0];
+                }
+                this.addresses = this.addresses.filter(x => x.id != this.defaultAddress.id);
                 this.isLoading = false;
             } catch (error) {
                 console.log(error);
@@ -260,6 +270,23 @@ export default {
                     } else {
                         alert(data.message);
                     }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async setDefault(address) {
+            try {
+                this.isLoading = true;
+                const { data } = await AddressAPI.setDefault({
+                    id: address.id,
+                    user_id: this.$auth.user.id,
+                });;
+                if(data.success) {
+                    alert(data.message);
+                    this.getData();
+                } else {
+                    alert(data.message);
                 }
             } catch (error) {
                 console.log(error);
