@@ -23,7 +23,7 @@
                     </div>
                     <b-button size="lg" variant="dark" squared class="mb-3" type="submit">{{ $t('login') }}</b-button>
                     <div>
-                        <a href="#" class="font-weight-bold">{{ $t('forgotPassword') }}</a>
+                        <a href="/auth/password/reset" class="font-weight-bold">{{ $t('forgotPassword') }}</a>
                     </div>
                 </b-form>
             </b-col>
@@ -37,7 +37,6 @@
 </template>
 
 <script>
-import AuthAPI from '@/api/user';
 export default {
     layout: 'plain',
     layout (context) {

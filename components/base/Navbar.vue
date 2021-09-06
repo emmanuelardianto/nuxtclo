@@ -1,6 +1,6 @@
 <template>
   <div>
-      <b-navbar toggleable="lg" type="light" class="bg-white">
+    <b-navbar toggleable="lg" type="light" class="bg-white border-bottom" fixed="top">
       <b-container>
         <b-navbar-brand href="/">
           <img src="~/assets/header.svg" alt="logo" title="uniqlo">
@@ -10,7 +10,7 @@
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item href="#" v-for="menu in menus" :key="menu" class="font-weight-bold text-uppercase">{{ menu }}</b-nav-item>
+            <b-nav-item href="#" v-for="menu in menus" :key="menu" @click="isOpen = !isOpen" class="font-weight-bold text-uppercase">{{ menu }}</b-nav-item>
           </b-navbar-nav>
 
           <!-- Right aligned nav items -->
@@ -38,10 +38,23 @@
             <b-nav-item href="#"><i class="fa fa-shopping-cart"></i></b-nav-item>
           </b-navbar-nav>
         </b-collapse>
-        <b-navbar-nav class="ml-auto">
-        </b-navbar-nav>
       </b-container>
     </b-navbar>
+    <div class="category-container" v-if="isOpen">
+      <b-container>
+        <b-row>
+          <b-col md="8">
+            <b-row>
+              <b-col md="3" cols="12" class="mb-2" v-for="category in 10" :key="category">
+                <div class="font-weight-bold mb-1">Category {{ category }}</div>
+                <div v-for="sub in 10" :key="sub" class="py-1"><a href="#">Sub Category {{ sub }}</a></div>
+              </b-col>
+            </b-row>
+          </b-col>
+          <b-col md="4">asd</b-col>
+        </b-row>
+      </b-container>
+    </div>
   </div>
 </template>
 
@@ -54,7 +67,8 @@ export default {
         "men",
         "kids",
         "baby"
-      ]
+      ],
+      isOpen: false
     }
   },
   methods: {
@@ -75,5 +89,17 @@ export default {
 <style scoped>
 .navbar-light .navbar-nav .nav-link {
   color: #1b1b1b;
+}
+</style>
+
+<style>
+.category-container {
+  position: absolute;
+  width: 100%;
+  min-height: 100%;
+  background: #FFF;
+  z-index: 2;
+  padding: 15px 0;
+  top: 67px;
 }
 </style>
