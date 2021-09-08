@@ -8,4 +8,7 @@ export default {
   register(param) {
     return clientAPI().post(prefix + '/register', param);
   },
+  forgotPassword(param) {
+    return clientAPI().post(prefix + '/forgot-password', param);
+  },
 };
