@@ -77,7 +77,7 @@ export default {
                 }); 
                 alert(data.message);
                 if(data.success) {
-                    this.$router.push('/');
+                    this.$router.push('/auth/password/forgot-sent');
                 }
             } catch (err) {
                 console.log(err)
