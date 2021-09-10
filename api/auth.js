@@ -11,4 +11,10 @@ export default {
   forgotPassword(param) {
     return clientAPI().post(prefix + '/forgot-password', param);
   },
+  validateToken(param) {
+    return clientAPI().post(prefix + '/validate-token', param);
+  },
+  resetPassword(param) {
+    return clientAPI().post(prefix + '/reset-password', param);
+  },
 };
