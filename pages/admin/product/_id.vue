@@ -78,6 +78,20 @@
                         </div>
                     </b-col>
                 </b-row>
+                <div v-if="variantTableData.length > 0" class="mb-3 text-right">
+                    <b-button v-b-modal.modal-1>一度に設定</b-button>
+
+                    <b-modal id="modal-1" ref="modal-1" title="一度に設定" centered>
+                        <label for="">Price</label>
+                        <b-form-input v-model="allPrice" type="number" class=""></b-form-input>
+                        <label for="">Qty</label>
+                        <b-form-input type="number" v-model="allQty"></b-form-input>
+                        <template #modal-footer="{ cancel }">
+                            <b-button block variant="dark" squared @click="apply()">実行</b-button>
+                            <b-button block variant="light" squared @click="cancel()">キャンセル</b-button>
+                        </template>
+                    </b-modal>
+                </div>
                 <div class="mb-5">
                     <b-table 
                         :fields="variantFields"
@@ -155,6 +169,8 @@ export default {
             ],
             variantSelected: [],
             selectMode: 'multi',
+            allPrice: 0,
+            allQty: 0
         }
     },
     validations: {
@@ -346,6 +362,15 @@ export default {
             }
                 
             return name;
+        },
+        apply() {
+            this.variantTableData.forEach(item => {
+                item.price = this.allPrice;
+                item.qty = this.allQty;
+            });
+            this.$refs['modal-1'].hide();
+            this.allPrice = 0;
+            this.allQty = 0;
         }
     }
 }
