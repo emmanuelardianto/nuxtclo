@@ -29,9 +29,9 @@ export default {
                             link: "/member/coupon/wallet-store"
                         },
                         {
-                            name: "",
+                            name: "wishlist",
                             title: "お気に入り",
-                            link: ""
+                            link: "/member/wishlist"
                         },
                         {
                             name: "purchaseHistory",
