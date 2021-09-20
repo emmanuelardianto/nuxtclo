@@ -5,10 +5,7 @@ export default {
   getList(param) {
     return clientAPI().post(prefix + '/list',param);
   },
-  create(param) {
-    return clientAPI().post(prefix + '/create', param);
-  },
-  delete(param) {
-    return clientAPI().post(prefix + '/delete', param);
+  toggle(param) {
+    return clientAPI().post(prefix + '/toggle', param);
   },
 };
