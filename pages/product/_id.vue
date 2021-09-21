@@ -39,6 +39,7 @@
             </div>
             <b-row class="mb-3">
                 <b-col cols="12" xl="4" md="6">
+                    {{ selectedVariant }}
                     <div class="font-weight-bold mb-2">数量</div>
                     <b-form-select v-model="qtySelected" :options="qty"></b-form-select>
                 </b-col>
@@ -49,7 +50,7 @@
                     <b-button variant="outline-dark" size="lg" squared block class="mb-3">店舗在庫の検索</b-button>
                 </b-col>
                 <b-col cols="6">
-                    <b-button variant="outline-dark" size="lg" squared block class="mb-3"><i class="fa fa-heart"></i> お気に入り</b-button>
+                    <b-button variant="outline-dark" size="lg" squared block class="mb-3" @click="addToWishlist"><i class="fa fa-heart"></i> お気に入り</b-button>
                 </b-col>
             </b-row>
         </b-col>
@@ -72,6 +73,7 @@
 
 <script>
 import ProductAPI from '@/api/product';
+import WistlistAPI from '@/api/wishlist';
 export default {
     layout: 'default',
     layout (context) {
@@ -114,11 +116,35 @@ export default {
         }
     },
     watch: {
-        selectedSize() {
-
+        selectedSize(val) {
+            if(this.product.variant_type == 'colorsize') {
+                if(this.selectedColor) {
+                    this.selectedVariant = this.variants.filter(
+                                                        x => x.variant_type1 == 'color' &&
+                                                        x.variant_value1 == this.selectedColor.id &&
+                                                        x.variant_type2 == 'size' &&
+                                                        x.variant_value2 == val.id)[0];
+                }
+            } else if(this.product.variant_type == 'size') {
+                this.selectedVariant = this.variants.filter(
+                                                        x => x.variant_type1 == 'size' &&
+                                                        x.variant_value1 == val.id)[0];
+            }
         },
-        selectedColor() {
-
+        selectedColor(val) {
+            if(this.product.variant_type == 'colorsize') {
+                if(this.selectedSize) {
+                    this.selectedVariant = this.variants.filter(
+                                                        x => x.variant_type1 == 'color' &&
+                                                        x.variant_value1 == val.id &&
+                                                        x.variant_type2 == 'size' &&
+                                                        x.variant_value2 == this.selectedSize.id)[0];
+                }
+            } else if(this.product.variant_type == 'color') {
+                this.selectedVariant = this.variants.filter(
+                                                        x => x.variant_type1 == 'color' &&
+                                                        x.variant_value1 == val.id)[0];
+            }
         }
     },
     methods: {
@@ -128,6 +154,33 @@ export default {
       onSlideEnd(slide) {
         this.sliding = false
       },
+      async addToWishlist() {
+        if(!this.$auth.loggedIn) {
+            this.$router.push('/login')
+            return;
+        }
+        
+        if(!this.selectedSize || !this.selectedColor) {
+            alert("Please select variant");
+            return;
+        }
+        try {
+            this.isLoading = true;
+            const { data } = await WistlistAPI.toggle({ 
+                user_id: this.$auth.user.id,
+                product_id: this.product.id,
+                product_variant_id: this.selectedVariant.id
+            }); 
+            this.wishlists = data.data;
+            if(data.success) {
+                alert('Successfuly added to wishlist');
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+      }
     },
     async asyncData({ params }) { 
         const { data } = await ProductAPI.getBySlug(params.id);
