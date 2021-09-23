@@ -39,7 +39,6 @@
             </div>
             <b-row class="mb-3">
                 <b-col cols="12" xl="4" md="6">
-                    {{ selectedVariant }}
                     <div class="font-weight-bold mb-2">数量</div>
                     <b-form-select v-model="qtySelected" :options="qty"></b-form-select>
                 </b-col>
@@ -51,6 +50,14 @@
                 </b-col>
                 <b-col cols="6">
                     <b-button variant="outline-dark" size="lg" squared block class="mb-3" @click="addToWishlist"><i class="fa fa-heart"></i> お気に入り</b-button>
+                </b-col>
+            </b-row>
+            <b-row v-if="wishlists.length > 0">
+                <b-col cols="12">
+                    <div class="font-weight-bold mb-3">この商品のお気に入り登録情報</div>
+                    <div v-for="wishlist in wishlists" :key="wishlist.id">
+                        カラー: {{ wishlist.color.text }} / サイズ: {{ wishlist.size.text }}
+                    </div>
                 </b-col>
             </b-row>
         </b-col>
@@ -113,7 +120,11 @@ export default {
                 require("~/assets/front/product-05.webp"),
                 require("~/assets/front/product-06.webp")
             ],
+            wishlists: []
         }
+    },
+    mounted() {
+        this.getWishlist();
     },
     watch: {
         selectedSize(val) {
@@ -171,7 +182,7 @@ export default {
                 product_id: this.product.id,
                 product_variant_id: this.selectedVariant.id
             }); 
-            this.wishlists = data.data;
+            this.getWishlist()
             if(data.success) {
                 alert('Successfuly added to wishlist');
             } else {
@@ -180,7 +191,33 @@ export default {
         } catch (error) {
             console.log(error);
         }
-      }
+      },
+      async getWishlist() {
+        try {
+            if(!this.$auth.loggedIn)
+                return;
+
+            this.isLoading = true;
+            const { data } = await WistlistAPI.getList({ 
+                user_id: this.$auth.user.id,
+                product_id: this.product.id
+            }); 
+            this.wishlists = data.data;
+            this.wishlists = data.data.map(function(w) {
+                return this.variants.filter(x => x.id == w.product_variant_id).map(function(x) {
+                        return {
+                            id: w.id,
+                            color: this.colors.filter(col => col.id == x.variant_value1)[0],
+                            size: this.sizes.filter(col => col.id == x.variant_value2)[0],
+                        }
+                }, this)[0];
+            }, this);
+            this.isLoading = false;
+            console.log(this.wishlists);
+        } catch (error) {
+            console.log(error);
+        }
+      },
     },
     async asyncData({ params }) { 
         const { data } = await ProductAPI.getBySlug(params.id);
@@ -189,7 +226,7 @@ export default {
             variants: data.data.product.product_variants,
             selectedVariant: data.data.product.product_variants[0],
             colors: data.data.assets.filter(x => x.name == 'color'),
-            sizes: data.data.assets.filter(x => x.name == 'size')
+            sizes: data.data.assets.filter(x => x.name == 'size'),
         }
     },
 }
