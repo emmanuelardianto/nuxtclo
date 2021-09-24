@@ -183,11 +183,7 @@ export default {
                 product_variant_id: this.selectedVariant.id
             }); 
             this.getWishlist()
-            if(data.success) {
-                alert('Successfuly added to wishlist');
-            } else {
-                alert(data.message);
-            }
+            alert(data.message);
         } catch (error) {
             console.log(error);
         }
