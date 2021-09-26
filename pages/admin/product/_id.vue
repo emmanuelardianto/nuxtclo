@@ -117,11 +117,30 @@
                     <b-button variant="outline-danger" @click="removeRow" size="sm" v-if="variantTableData.length > 0" :disabled="variantSelected.length == 0">{{ $t('Remove Selected') }}</b-button>
                 </div>
                 <div class="form-group mb-3">
+                    <label for="">Collections</label>
+                    <div>
+                        <b-badge pill variant="light" v-for="item in collections.filter(x => selectedCollections.indexOf(x.id) != -1)" :key="item.id">{{ item.title }}</b-badge>
+                    </div>
+                    <b-button v-b-modal.modal-scrollable>Select Collection</b-button>
+                </div>
+                <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="primary" squared class="mb-3">{{ $t('save') }}</b-button>
                     <b-button size="lg" variant="secondary" squared class="mb-3" @click="$router.push('/admin/category')">{{ $t('cancel') }}</b-button>
                 </div>
             </b-col>
         </b-row>
+        <div>
+            <b-modal id="modal-scrollable" scrollable title="Collection">
+                <b-form-checkbox-group
+                v-model="selectedCollections"
+                :options="collections"
+                class="mb-3"
+                value-field="id"
+                text-field="title"
+                stacked
+                ></b-form-checkbox-group>
+            </b-modal>
+        </div>
     </div>
 </template>
 
@@ -170,7 +189,9 @@ export default {
             variantSelected: [],
             selectMode: 'multi',
             allPrice: 0,
-            allQty: 0
+            allQty: 0,
+            collections: [],
+            selectedCollections: []
         }
     },
     validations: {
@@ -211,6 +232,7 @@ export default {
             this.colors = data.data.colors;
             this.sizes = data.data.sizes;
             this.genders = data.data.genders;
+            this.collections = data.data.collections;
 
             this.variantData.forEach(item => {
                 if(item.variant_type1 == 'color')
@@ -255,7 +277,8 @@ export default {
                     name: this.name,
                     variant_type: this.selectedVariants.join(''),
                     description: this.description,
-                    variants: this.variantTableData
+                    variants: this.variantTableData,
+                    collections: this.selectedCollections
                 }
                 let result = null;
                 if(this.isUpdate) {

@@ -40,6 +40,10 @@ export default {
               name: this.$t("variant"),
               url: "/admin/variant"
           },
+          {
+              name: this.$t("collection"),
+              url: "/admin/collection"
+          },
       ]
     }
   }
