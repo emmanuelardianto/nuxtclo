@@ -5,29 +5,28 @@
                 <h2 class="mb-3">{{ $t('createData') }}</h2>
                 <b-alert :show="alert != ''" variant="danger" class="mb-3">{{ alert }}</b-alert>
                 <div class="form-group mb-3">
-                    <label for="name">{{ $t('name') }}</label>
-                    <b-form-input v-model.trim="$v.name.$model"></b-form-input>
+                    <label for="title">{{ $t('title') }}</label>
+                    <b-form-input v-model.trim="$v.title.$model"></b-form-input>
                     <span class="text-danger" ></span>
                 </div>
+                <div class="form-group mb-5">
+                    <label for="description">{{ $t('description') }}</label>
+                    <b-form-textarea
+                        v-model="description"
+                        placeholder="Enter something..."
+                        rows="3"
+                        max-rows="6"
+                        ></b-form-textarea>
+                </div>
                 <div class="form-group mb-3">
-                    <b-form-group
-                        :label="$t('gender')"
-                        v-slot="{ ariaDescribedby }"
-                        >
-                        <b-form-checkbox-group
-                            v-model="gender"
-                            :options="genders"
-                            :aria-describedby="ariaDescribedby"
-                            name="buttons-1"
-                            buttons
-                            button-variant="primary"
-                        ></b-form-checkbox-group>
-                    </b-form-group>
+                    <b-form-checkbox id="status" v-model="status" name="status" value="1">
+                    {{ $t('isActive')}}
+                    </b-form-checkbox>
                 </div>
                 <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="dark" squared class="mb-3">{{ $t('save') }}</b-button>
                     <b-button size="lg" v-if="isUpdate" variant="danger" squared class="mb-3" @click="deleteData">{{ $t('delete') }}</b-button>
-                    <b-button size="lg" variant="secondary" squared class="mb-3" @click="$router.push('/admin/category')">{{ $t('cancel') }}</b-button>
+                    <b-button size="lg" variant="secondary" squared class="mb-3" @click="$router.push('/admin/collection')">{{ $t('cancel') }}</b-button>
                 </div>
             </b-col>
         </b-row>
@@ -46,14 +45,16 @@ export default {
     },
     data() {
         return {
-            name: "",
+            title: "",
+            status: true,
+            description: "",
             alert: "",
             genders: [],
             gender: [],
         }
     },
     validations: {
-        name: {
+        title: {
             required,
             minLength: minLength(4)
         },
@@ -64,11 +65,12 @@ export default {
                 isUpdate: false
             }
         }
-        const { data } = await CategoryAPI.getById(params.id); 
+        const { data } = await CollectionAPI.getById(params.id); 
         return {
             id: data.data.id,
-            name: data.data.name,
-            gender: data.data.gender ? data.data.gender : [],
+            title: data.data.title,
+            status: data.data.status,
+            description: data.data.description,
             isUpdate: true
         }
     },
@@ -83,20 +85,16 @@ export default {
                 let result = null;
                 const payload = {
                     id: this.id,
-                    name: this.name,
-                    gender: this.gender
+                    title: this.title,
+                    status: this.status,
+                    description: this.description
                 }
+                
+                const { data } = await CollectionAPI.update(payload);
 
-                if(this.isUpdate) {
-                    result = await CategoryAPI.update(payload);
-                } else {
-                    result = await CategoryAPI.create(payload);
-                }
-                const { data } = result;
-
+                alert(data.message);
                 if(data.success) {
-                    alert('Successfuly updated data');
-                    this.$router.push('/admin/category')
+                    this.$router.push('/admin/collection')
                 }
             } catch (error) {
                 console.log(error);
@@ -105,11 +103,11 @@ export default {
         async deleteData() {
             try {
                 if(confirm(this.$t("Do you really want to delete?"))){ 
-                    const { data } = await CategoryAPI.delete({ id: this.id }); 
+                    const { data } = await CollectionAPI.delete({ id: this.id }); 
 
                     if(data.success) {
                         alert('Successfuly deleted data.');
-                        this.$router.push('/admin/category')
+                        this.$router.push('/admin/collection')
                     }
                 }
             } catch (error) {
