@@ -11,4 +11,7 @@ export default {
   update(param) {
     return clientAPI().post(prefix + '/update', param);
   },
+  delete(param) {
+    return clientAPI().post(prefix + '/delete', param);
+  },
 };

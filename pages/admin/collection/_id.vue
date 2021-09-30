@@ -89,7 +89,7 @@ export default {
                     status: this.status,
                     description: this.description
                 }
-                
+
                 const { data } = await CollectionAPI.update(payload);
 
                 alert(data.message);
@@ -105,8 +105,8 @@ export default {
                 if(confirm(this.$t("Do you really want to delete?"))){ 
                     const { data } = await CollectionAPI.delete({ id: this.id }); 
 
+                    alert(data.message);
                     if(data.success) {
-                        alert('Successfuly deleted data.');
                         this.$router.push('/admin/collection')
                     }
                 }
