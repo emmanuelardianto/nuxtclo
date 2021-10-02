@@ -23,6 +23,12 @@
                     {{ $t('isActive')}}
                     </b-form-checkbox>
                 </div>
+                <div v-if="items && items.length > 0">
+                    <div class="font-weight-bold mb-3">Products</div>
+                    <div v-for="item in items.filter(x => x.product)" :key="item.id" class="border px-2 py-2 mb-2">
+                        {{ item.product.name }}
+                    </div>
+                </div>
                 <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="dark" squared class="mb-3">{{ $t('save') }}</b-button>
                     <b-button size="lg" v-if="isUpdate" variant="danger" squared class="mb-3" @click="deleteData">{{ $t('delete') }}</b-button>
@@ -49,8 +55,6 @@ export default {
             status: true,
             description: "",
             alert: "",
-            genders: [],
-            gender: [],
         }
     },
     validations: {
@@ -65,13 +69,14 @@ export default {
                 isUpdate: false
             }
         }
-        const { data } = await CollectionAPI.getById(params.id); 
+        const { data } = await CollectionAPI.getById(params.id, { with_product: true }); 
         return {
             id: data.data.id,
             title: data.data.title,
             status: data.data.status,
             description: data.data.description,
-            isUpdate: true
+            isUpdate: true,
+            items: data.data.items
         }
     },
     methods: {

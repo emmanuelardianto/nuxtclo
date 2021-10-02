@@ -5,8 +5,9 @@ export default {
     const q = new URLSearchParams(param).toString()
     return clientAPI().get(prefix + '?' + q);
   },
-  getById(param) {
-    return clientAPI().get(prefix + '/' + param);
+  getById(param, query) {
+    const q = new URLSearchParams(query).toString()
+    return clientAPI().get(prefix + '/' + param + '?' + q);
   },
   update(param) {
     return clientAPI().post(prefix + '/update', param);
