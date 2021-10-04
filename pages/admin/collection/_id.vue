@@ -25,10 +25,12 @@
                 </div>
                 <div v-if="items && items.length > 0">
                     <div class="font-weight-bold mb-3">Products</div>
-                    <div v-for="item in items.filter(x => x.product)" :key="item.id" class="border px-2 py-2 mb-2">
-                        {{ item.product.name }}
+                    <div v-for="item in selectedProducts" :key="item.id" class="border px-2 py-2 mb-2">
+                        {{ item.name }}
+                        <span class="float-right cursor-pointer" @click="removeCollectionItem(item.id)"><i class="fa fa-times"></i></span>
                     </div>
                 </div>
+                <b-button v-b-modal.modal-scrollable>Add Product</b-button>
                 <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="dark" squared class="mb-3">{{ $t('save') }}</b-button>
                     <b-button size="lg" v-if="isUpdate" variant="danger" squared class="mb-3" @click="deleteData">{{ $t('delete') }}</b-button>
@@ -36,6 +38,18 @@
                 </div>
             </b-col>
         </b-row>
+        <div>
+            <b-modal id="modal-scrollable" @show="getProductData" scrollable title="Collection">
+                <b-form-checkbox-group
+                v-model="selectedProducts"
+                :options="products"
+                class="mb-3"
+                value-field="id"
+                text-field="name"
+                stacked
+                ></b-form-checkbox-group>
+            </b-modal>
+        </div>
     </div>
 </template>
 
@@ -55,6 +69,10 @@ export default {
             status: true,
             description: "",
             alert: "",
+            products: [],
+            selectedProducts: [],
+            perPage: 1,
+            search: ""
         }
     },
     validations: {
@@ -76,7 +94,10 @@ export default {
             status: data.data.status,
             description: data.data.description,
             isUpdate: true,
-            items: data.data.items
+            items: data.data.items,
+            selectedProducts: data.data.items.map(function(x) {
+                return x.product
+            })
         }
     },
     methods: {
@@ -87,12 +108,14 @@ export default {
                     this.alert = "Error";
                     return;
                 }
-                let result = null;
                 const payload = {
                     id: this.id,
                     title: this.title,
                     status: this.status,
-                    description: this.description
+                    description: this.description,
+                    items: this.selectedProducts.map(function(x) {
+                        return x.id
+                    })
                 }
 
                 const { data } = await CollectionAPI.update(payload);
@@ -118,14 +141,22 @@ export default {
             } catch (error) {
                 console.log(error);
             }
-        }
-    },
-    async fetch() {
-        try {
-            const { data } = await ProductAPI.getAssets();
-            this.genders = data.data.genders;
-        } catch (error) {
-            console.log(error);
+        },
+        async getProductData() {
+            try {
+                this.isLoading = true;
+                const { data } = await ProductAPI.getList({ 
+                    page: this.currentPage, 
+                    search: this.search 
+                }); 
+                this.products = data.data.data;
+                this.isLoading = false;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        removeCollectionItem(id) {
+            this.selectedProducts = this.selectedProducts.filter(x => x.id != id);
         }
     },
 }

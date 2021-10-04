@@ -49,3 +49,7 @@ a {
 .page-link {
   color: #ff5959;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
