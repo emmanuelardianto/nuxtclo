@@ -30,7 +30,7 @@
                         <span class="float-right cursor-pointer" @click="removeCollectionItem(item.id)"><i class="fa fa-times"></i></span>
                     </div>
                 </div>
-                <b-button v-b-modal.modal-scrollable>Add Product</b-button>
+                <b-button v-b-modal.form-modal size="sm" class="mb-3">Add Product</b-button>
                 <div class="form-group mb-3">
                     <b-button @click="save" size="lg" variant="dark" squared class="mb-3">{{ $t('save') }}</b-button>
                     <b-button size="lg" v-if="isUpdate" variant="danger" squared class="mb-3" @click="deleteData">{{ $t('delete') }}</b-button>
@@ -39,7 +39,7 @@
             </b-col>
         </b-row>
         <div>
-            <b-modal id="modal-scrollable" @show="getProductData" scrollable title="Collection">
+            <b-modal ref="form-modal" id="form-modal" @show="getProductData" scrollable title="Collection">
                 <b-form-checkbox-group
                 v-model="selectedProducts"
                 :options="products"
@@ -48,6 +48,10 @@
                 text-field="name"
                 stacked
                 ></b-form-checkbox-group>
+                <template #modal-footer="{ cancel }">
+                    <b-button block variant="dark" squared @click="addProduct()">追加</b-button>
+                    <b-button block variant="light" squared @click="cancel()">キャンセル</b-button>
+                </template>
             </b-modal>
         </div>
     </div>
@@ -157,6 +161,9 @@ export default {
         },
         removeCollectionItem(id) {
             this.selectedProducts = this.selectedProducts.filter(x => x.id != id);
+        },
+        addProduct() {
+            this.$refs['form-modal'].hide();
         }
     },
 }
