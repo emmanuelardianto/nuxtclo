@@ -41,7 +41,7 @@
         <div>
             <b-modal ref="form-modal" id="form-modal" @show="getProductData" scrollable title="Collection">
                 <b-form-checkbox-group
-                v-model="selectedProducts"
+                v-model="selectedProductIds"
                 :options="products"
                 class="mb-3"
                 value-field="id"
@@ -75,6 +75,7 @@ export default {
             alert: "",
             products: [],
             selectedProducts: [],
+            selectedProductIds: [],
             perPage: 1,
             search: ""
         }
@@ -84,6 +85,11 @@ export default {
             required,
             minLength: minLength(4)
         },
+    },
+    watch: {
+        selectedProductIds(value) {
+            this.selectedProducts = this.products.filter(x => value.indexOf(x.id) != -1);
+        }
     },
     async asyncData({ params }) { 
         if(params.id === 'update') {
@@ -101,7 +107,10 @@ export default {
             items: data.data.items,
             selectedProducts: data.data.items.map(function(x) {
                 return x.product
-            })
+            }),
+            selectedProductIds: data.data.items.map(function(x) {
+                return x.product_id
+            }),
         }
     },
     methods: {
