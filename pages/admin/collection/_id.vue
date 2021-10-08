@@ -39,7 +39,12 @@
             </b-col>
         </b-row>
         <div>
-            <b-modal ref="form-modal" id="form-modal" @show="getProductData" scrollable title="Collection">
+            <b-modal ref="form-modal" id="form-modal" @show="getProductData" scrollable title="商品検索">
+                <div class="form-group mb-3">
+                    <label for="title">{{ $t('search') }}</label>
+                    <b-form-input v-model="search"></b-form-input>
+                    <span class="text-danger" ></span>
+                </div>
                 <b-form-checkbox-group
                 v-model="selectedProductIds"
                 :options="products"
@@ -49,7 +54,7 @@
                 stacked
                 ></b-form-checkbox-group>
                 <template #modal-footer="{ cancel }">
-                    <b-button block variant="dark" squared @click="addProduct()">追加</b-button>
+                    <b-button block variant="dark" squared @click="addProduct()">保存</b-button>
                     <b-button block variant="light" squared @click="cancel()">キャンセル</b-button>
                 </template>
             </b-modal>
@@ -77,7 +82,7 @@ export default {
             selectedProducts: [],
             selectedProductIds: [],
             perPage: 1,
-            search: ""
+            search: "",
         }
     },
     validations: {
@@ -89,6 +94,15 @@ export default {
     watch: {
         selectedProductIds(value) {
             this.selectedProducts = this.products.filter(x => value.indexOf(x.id) != -1);
+        },
+        async search() {
+            if (this.timer) {
+                clearTimeout(this.timer);
+                this.timer = null;
+            }
+            this.timer = setTimeout(() =>  {
+                this.getProductData();
+            }, 800);
         }
     },
     async asyncData({ params }) { 
