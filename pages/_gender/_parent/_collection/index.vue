@@ -26,11 +26,27 @@
 		</b-row>
 		<b-row>
             <b-col cols="12" xl="2" lg="3" md="4">
-				<div>
+				<div class="mb-3">
 					<h5>カテゴリー</h5>
 					<div class="pl-3">
 						<a :href="'/category/' + category.slug" class="text-dark d-block py-2" v-for="category in categories" :key="category.id">{{ category.name }}</a>
 					</div>
+				</div>
+                <div>
+					<div v-b-toggle.collapse-price class="d-flex py-2 justify-content-between cursor-pointer">
+                        <span class="text-bigger">価格</span>
+                        <span class="when-opened text-secondary align-self-center">
+                            <i class="fa plus fa-minus"></i>
+                        </span>
+                        <span class="when-closed text-secondary align-self-center">
+                            <i class="fa plus fa-plus"></i>
+                        </span>
+                    </div>
+                    <b-collapse id="collapse-price" :visible="collapsePrice">
+                        <div class="py-1 text-bigger text-secondary cursor-pointer" v-for="price in 9" :key="price" @click="selectPrice(price * 1000)">
+                            <i class="fa-lg" :class="selectedFilter.price == price * 1000 ? 'fas fa-check-square' : 'far fa-square' "></i> ~ ¥{{ price * 1000 }}
+                        </div>
+                    </b-collapse>
 				</div>
 			</b-col>
             <b-col cols="12" xl="10" lg="9" md="8">
@@ -75,7 +91,10 @@ export default {
             category: null,
             pagination: {
                 total: 0
-            }
+            },
+            selectedFilter: {
+                price: -1
+            },
         }
     },
     async asyncData({params}) { 
@@ -108,7 +127,21 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+        },
+        selectPrice(price) {
+            if(this.selectedFilter.price == price) {
+                this.selectedFilter.price = -1;
+                return;
+            }
+            this.selectedFilter.price = price;
         }
-    }
+    },
 }
 </script>
+
+<style scoped>
+.collapsed > .when-opened,
+:not(.collapsed) > .when-closed {
+    display: none;
+}
+</style>
