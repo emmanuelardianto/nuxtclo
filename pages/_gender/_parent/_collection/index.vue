@@ -42,9 +42,25 @@
                             <i class="fa plus fa-plus"></i>
                         </span>
                     </div>
-                    <b-collapse id="collapse-price" :visible="collapsePrice">
+                    <b-collapse id="collapse-price">
                         <div class="py-1 text-bigger text-secondary cursor-pointer" v-for="price in 9" :key="price" @click="selectPrice(price * 1000)">
                             <i class="fa-lg" :class="selectedFilter.price == price * 1000 ? 'fas fa-check-square' : 'far fa-square' "></i> ~ ¥{{ price * 1000 }}
+                        </div>
+                    </b-collapse>
+				</div>
+                <div>
+					<div v-b-toggle.collapse-size class="d-flex py-2 justify-content-between cursor-pointer">
+                        <span class="text-bigger">サイズ</span>
+                        <span class="when-opened text-secondary align-self-center">
+                            <i class="fa plus fa-minus"></i>
+                        </span>
+                        <span class="when-closed text-secondary align-self-center">
+                            <i class="fa plus fa-plus"></i>
+                        </span>
+                    </div>
+                    <b-collapse id="collapse-size" class="size-filter">
+                        <div class="py-1 text-bigger text-secondary cursor-pointer" v-for="size in sizes" :key="size" @click="selectSize(size)">
+                            <i class="fa-lg" :class="selectedFilter.sizes.indexOf(size) != -1 ? 'fas fa-check-square' : 'far fa-square' "></i> {{ size }}
                         </div>
                     </b-collapse>
 				</div>
@@ -93,8 +109,10 @@ export default {
                 total: 0
             },
             selectedFilter: {
-                price: -1
+                price: -1,
+                sizes: []
             },
+            sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL']
         }
     },
     async asyncData({params}) { 
@@ -134,6 +152,13 @@ export default {
                 return;
             }
             this.selectedFilter.price = price;
+        },
+        selectSize(size) {
+            if(this.selectedFilter.sizes.indexOf(size) == -1) {
+                this.selectedFilter.sizes.push(size);
+                return;
+            }
+            this.selectedFilter.sizes = this.selectedFilter.sizes.filter(x => x != size);
         }
     },
 }
