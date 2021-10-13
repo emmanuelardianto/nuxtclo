@@ -134,6 +134,7 @@ export default {
                 this.products = data.data.products.data;
                 this.pagination.total = data.data.products.total;
                 this.category = data.data;
+                console.log(this.products);
             } catch (error) {
                 console.log(error);
             }

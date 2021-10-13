@@ -17,7 +17,7 @@
             </b-col>
         </b-row>
         <h5>{{ product.name }}</h5>
-        <div class="font-weight-bold my-2">{{ product.price }}</div>
+        <div class="font-weight-bold my-2">{{ priceCurrency(product.product_variants[0].price) }}</div>
         <div class="my-2">
             <i class="fa fa-star"></i>
             <i class="fa fa-star"></i>
@@ -31,7 +31,16 @@
 
 <script>
 export default {
-    props: [ 'product' ]
+    props: [ 'product' ],
+    methods: {
+        priceCurrency(price) {
+            var formatter = new Intl.NumberFormat('ja-JP', {
+                style: 'currency',
+                currency: 'JPY',
+            });
+            return formatter.format(parseInt(price));
+        }
+    }
 }
 </script>
 
