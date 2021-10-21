@@ -20,4 +20,14 @@ export default {
   getBySlug(param) {
     return clientAPI().get(prefix + '/detail/' + param);
   },
+  galleryUpdate(payload) {
+    return clientAPI().post(prefix + '/gallery-update', payload, {
+        headers: {
+          'accept': 'application/json',
+          'Accept-Language': 'en-US,en;q=0.8',
+          'Content-Type': `multipart/form-data;`,
+        }
+      }
+    );
+  },
 };

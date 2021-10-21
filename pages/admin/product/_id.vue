@@ -47,9 +47,12 @@
                 <div v-if="isUpdate">
                     <h4>Gallery</h4>
                     <b-row class="mb-5">
+                        <b-col xl="1" lg="2" md="3" v-for="gallery in galleries" :key="gallery.id">
+                            <img :src="gallery.path" :alt="name" :title="name" class="w-100">
+                        </b-col>
                         <b-col xl="2" lg="3" md="4">
-                            b-form
-                            <b-button variant="secondary">Add</b-button>
+                            <input type="file" class="custom-file-input" id="file" ref="file" @change="handleFileObject()">
+                            <b-button variant="secondary" onclick="document.getElementById('file').click()">Add</b-button>
                         </b-col>
                     </b-row>
                 </div>
@@ -191,7 +194,8 @@ export default {
             allPrice: 0,
             allQty: 0,
             collections: [],
-            selectedCollections: []
+            selectedCollections: [],
+            file: null
         }
     },
     validations: {
@@ -222,7 +226,8 @@ export default {
             description: data.data.product.description,
             selectedVariants: selectedVariants,
             variantData: data.data.product.product_variants,
-            isUpdate: true
+            isUpdate: true,
+            galleries: data.data.product.galleries
         }
     },
     async fetch() {
@@ -394,6 +399,25 @@ export default {
             this.$refs['modal-1'].hide();
             this.allPrice = 0;
             this.allQty = 0;
+        },
+        handleFileObject() {
+            this.file = this.$refs.file.files[0];
+            this.imageUpload();
+        },
+        async imageUpload() {
+            try {
+                console.log(this.file);
+                let formData = new FormData();
+                formData.set('img', this.file);
+                formData.set('id', this.id);
+                const { data } = await ProductAPI.galleryUpdate(formData); 
+                if(data.success) {
+                    alert('Successfuly deleted data.');
+                    // this.$router.push('/admin/category')
+                }
+            } catch (error) {
+                alert(error);
+            }
         }
     }
 }
