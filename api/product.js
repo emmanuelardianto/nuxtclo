@@ -20,8 +20,8 @@ export default {
   getBySlug(param) {
     return clientAPI().get(prefix + '/detail/' + param);
   },
-  galleryUpdate(payload) {
-    return clientAPI().post(prefix + '/gallery-update', payload, {
+  imageUpdate(payload) {
+    return clientAPI().post(prefix + '/image-update', payload, {
         headers: {
           'accept': 'application/json',
           'Accept-Language': 'en-US,en;q=0.8',
@@ -29,5 +29,8 @@ export default {
         }
       }
     );
+  },
+  imageRemove(payload) {
+    return clientAPI().post(prefix + '/image-remove', payload);
   },
 };

@@ -49,6 +49,7 @@
                     <b-row class="mb-5">
                         <b-col xl="1" lg="2" md="3" v-for="gallery in galleries" :key="gallery.id">
                             <img :src="gallery.path" :alt="name" :title="name" class="w-100">
+                            <a href="javascript:void()" @click="imageDelete(gallery.id)">Remove</a>
                         </b-col>
                         <b-col xl="2" lg="3" md="4">
                             <input type="file" class="custom-file-input" id="file" ref="file" @change="handleFileObject()">
@@ -410,15 +411,28 @@ export default {
                 let formData = new FormData();
                 formData.set('img', this.file);
                 formData.set('id', this.id);
-                const { data } = await ProductAPI.galleryUpdate(formData); 
+                const { data } = await ProductAPI.imageUpdate(formData); 
+                alert(data.message);
                 if(data.success) {
-                    alert('Successfuly deleted data.');
-                    // this.$router.push('/admin/category')
+                    this.$router.push('/admin/product/' + this.id);
                 }
             } catch (error) {
                 alert(error);
             }
-        }
+        },
+        async imageDelete(id) {
+            try {
+                if(confirm(this.$t("Do you really want to delete?"))){ 
+                    const { data } = await ProductAPI.imageRemove({ id: this.id, gallery_id: id }); 
+                    alert(data.message);
+                    if(data.success) {
+                        this.$router.push('/admin/product/' + this.id);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
     }
 }
 </script>
