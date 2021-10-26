@@ -196,7 +196,8 @@ export default {
             allQty: 0,
             collections: [],
             selectedCollections: [],
-            file: null
+            file: null,
+            galleries: []
         }
     },
     validations: {
@@ -211,28 +212,16 @@ export default {
                 isUpdate: false
             }
         }
-        const { data } = await ProductAPI.getById(params.id);
-        let selectedVariants = [];
-        if(data.data.product.variant_type.includes('color')) 
-            selectedVariants.push('color');
-        
-        if(data.data.product.variant_type.includes('size')) 
-            selectedVariants.push('size');
-
         return {
-            id: data.data.product.id,
-            category: data.data.product.category_id,
-            gender: data.data.product.gender,
-            name: data.data.product.name,
-            description: data.data.product.description,
-            selectedVariants: selectedVariants,
-            variantData: data.data.product.product_variants,
-            isUpdate: true,
-            galleries: data.data.product.galleries
+            id: params.id,
+            isUpdate: true
         }
     },
     async fetch() {
         try {
+            if(this.isUpdate) {
+                this.loadData();
+            }
             const { data } = await ProductAPI.getAssets();
             this.categories = data.data.categories; 
             this.colors = data.data.colors;
@@ -248,8 +237,6 @@ export default {
                 if(item.variant_type2 == 'size')
                     this.selectedSizes.push(this.sizes.filter(x => x.id == item.variant_value2)[0]);
             });
-            console.log("this.selectedColors", this.selectedColors);
-
         } catch (error) {
             console.log(error);
         }
@@ -407,14 +394,13 @@ export default {
         },
         async imageUpload() {
             try {
-                console.log(this.file);
                 let formData = new FormData();
                 formData.set('img', this.file);
                 formData.set('id', this.id);
                 const { data } = await ProductAPI.imageUpdate(formData); 
                 alert(data.message);
                 if(data.success) {
-                    this.$router.push('/admin/product/' + this.id);
+                    this.loadData()
                 }
             } catch (error) {
                 alert(error);
@@ -426,13 +412,36 @@ export default {
                     const { data } = await ProductAPI.imageRemove({ id: this.id, gallery_id: id }); 
                     alert(data.message);
                     if(data.success) {
-                        this.$router.push('/admin/product/' + this.id);
+                        this.loadData()
                     }
                 }
             } catch (error) {
                 console.log(error);
             }
         },
+        async loadData() {
+            try {
+                const { data } = await ProductAPI.getById(this.id);
+                let selectedVariants = [];
+                if(data.data.product.variant_type.includes('color')) 
+                    selectedVariants.push('color');
+                
+                if(data.data.product.variant_type.includes('size')) 
+                    selectedVariants.push('size');
+                
+                this.id = data.data.product.id
+                this.category = data.data.product.category_id;
+                this.gender = data.data.product.gender;
+                this.name = data.data.product.name;
+                this.description = data.data.product.description;
+                this.selectedVariants = selectedVariants;
+                this.variantData = data.data.product.product_variants;
+                this.isUpdate = true;
+                this.galleries = data.data.product.galleries;
+            } catch (error) {
+                alert(error);
+            }
+        }
     }
 }
 </script>
