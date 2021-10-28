@@ -105,6 +105,10 @@
                         @row-selected="onRowSelected"
                         v-if="variantTableData.length > 0"
                         >
+                        <template #cell(image)="data">
+                            <div v-if="image">{{ data.value }}</div>
+                            <div v-else><img src="https://via.placeholder.com/50?text=no%20image" alt="no image"></div>
+                        </template>
                         <template #cell(id)="data">
                             <span>{{ variantNameConcat(variantTableData[data.index]) }}</span>
                         </template>
@@ -185,6 +189,7 @@ export default {
             variantData: [],
             variantTableData: [],
             variantFields: [
+                { key: 'image', label: '' },
                 { key: 'id', label: 'Variant' },
                 { key: 'price', label: 'Price' },
                 { key: 'qty', label: 'Qty' },
