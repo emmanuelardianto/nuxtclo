@@ -106,8 +106,8 @@
                         v-if="variantTableData.length > 0"
                         >
                         <template #cell(image)="data">
-                            <div v-if="image">{{ data.value }}</div>
-                            <div v-else><img src="https://via.placeholder.com/50?text=no%20image" alt="no image"></div>
+                            <div><img :src="image ? data.path : 'https://via.placeholder.com/50?text=no%20image'" alt="no image"></div>
+                            {{ variantTableData[data.index].id }}
                         </template>
                         <template #cell(id)="data">
                             <span>{{ variantNameConcat(variantTableData[data.index]) }}</span>
