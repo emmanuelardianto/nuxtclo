@@ -106,8 +106,7 @@
                         v-if="variantTableData.length > 0"
                         >
                         <template #cell(image)="data">
-                            <div><img :src="image ? data.path : 'https://via.placeholder.com/50?text=no%20image'" alt="no image"></div>
-                            {{ variantTableData[data.index].id }}
+                            <div><img :src="data.gallery_id ? data.gallery_id : 'https://via.placeholder.com/50?text=no%20image'" alt="no image" v-b-modal.modal-gallery /></div>
                         </template>
                         <template #cell(id)="data">
                             <span>{{ variantNameConcat(variantTableData[data.index]) }}</span>
@@ -147,6 +146,18 @@
                 text-field="title"
                 stacked
                 ></b-form-checkbox-group>
+            </b-modal>
+            <b-modal id="modal-gallery" scrollable title="Gallery">
+                <b-row class="mb-5" v-if="isUpdate">
+                    <b-col xl="2" lg="3" md="4" v-for="gallery in galleries" :key="gallery.id">
+                        <img :src="gallery.path" :alt="name" :title="name" class="w-100">
+                        <a href="javascript:void()" @click="imageDelete(gallery.id)">Remove</a>
+                    </b-col>
+                    <b-col xl="2" lg="3" md="4">
+                        <input type="file" class="custom-file-input" id="file" ref="file" @change="handleFileObject()">
+                        <b-button variant="secondary" onclick="document.getElementById('file').click()">Add</b-button>
+                    </b-col>
+                </b-row>
             </b-modal>
         </div>
     </div>
@@ -224,9 +235,6 @@ export default {
     },
     async fetch() {
         try {
-            if(this.isUpdate) {
-                this.loadData();
-            }
             const { data } = await ProductAPI.getAssets();
             this.categories = data.data.categories; 
             this.colors = data.data.colors;
@@ -252,6 +260,11 @@ export default {
         },
         selectedColors() {
             this.generateVariant();
+        }
+    },
+    created() {
+        if(this.isUpdate) {
+            this.loadData();
         }
     },
     methods: {
@@ -393,18 +406,26 @@ export default {
             this.allPrice = 0;
             this.allQty = 0;
         },
-        handleFileObject() {
+        handleFileObject(id) {
             this.file = this.$refs.file.files[0];
-            this.imageUpload();
+            this.imageUpload(id);
         },
-        async imageUpload() {
+        async imageUpload(id) {
             try {
                 let formData = new FormData();
                 formData.set('img', this.file);
                 formData.set('id', this.id);
-                const { data } = await ProductAPI.imageUpdate(formData); 
-                alert(data.message);
-                if(data.success) {
+                let response = null;
+                if(id) {
+                    const { data } = await ProductAPI.variantImageUpdate(formData); 
+                    response = data;
+                } else {
+                    const { data } = await ProductAPI.imageUpdate(formData); 
+                    response = data;
+                }
+                
+                alert(response.message);
+                if(response.success) {
                     this.loadData()
                 }
             } catch (error) {
