@@ -165,6 +165,7 @@
 
 <script>
 import ProductAPI from '@/api/product';
+import GalleryAPI from '@/api/gallery';
 import { required, minLength } from 'vuelidate/lib/validators';
 
 export default {
@@ -448,6 +449,29 @@ export default {
         async loadData() {
             try {
                 const { data } = await ProductAPI.getById(this.id);
+                let selectedVariants = [];
+                if(data.data.product.variant_type.includes('color')) 
+                    selectedVariants.push('color');
+                
+                if(data.data.product.variant_type.includes('size')) 
+                    selectedVariants.push('size');
+                
+                this.id = data.data.product.id
+                this.category = data.data.product.category_id;
+                this.gender = data.data.product.gender;
+                this.name = data.data.product.name;
+                this.description = data.data.product.description;
+                this.selectedVariants = selectedVariants;
+                this.variantData = data.data.product.product_variants;
+                this.isUpdate = true;
+                this.galleries = data.data.product.galleries;
+            } catch (error) {
+                alert(error);
+            }
+        },
+        async getGallery() {
+            try {
+                const { data } = await ProductAPI.GalleryAPI(this.id);
                 let selectedVariants = [];
                 if(data.data.product.variant_type.includes('color')) 
                     selectedVariants.push('color');
