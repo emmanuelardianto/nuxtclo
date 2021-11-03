@@ -106,7 +106,7 @@
                         v-if="variantTableData.length > 0"
                         >
                         <template #cell(image)="data">
-                            <div><img :src="data.gallery_id ? data.gallery_id : 'https://via.placeholder.com/50?text=no%20image'" alt="no image" v-b-modal.modal-gallery /></div>
+                            <div><img :src="data.item.image ? data.item.image.path : 'https://via.placeholder.com/50?text=no%20image'" style="width: 50px" alt="no image" @click="changeVariantPicture(data.item.id)" /></div>
                         </template>
                         <template #cell(id)="data">
                             <span>{{ variantNameConcat(variantTableData[data.index]) }}</span>
@@ -147,15 +147,10 @@
                 stacked
                 ></b-form-checkbox-group>
             </b-modal>
-            <b-modal id="modal-gallery" scrollable title="Gallery">
+            <b-modal id="modal-gallery" ref="modal-gallery" scrollable title="Variant Image Update">
                 <b-row class="mb-5" v-if="isUpdate">
                     <b-col xl="2" lg="3" md="4" v-for="gallery in galleries" :key="gallery.id">
-                        <img :src="gallery.path" :alt="name" :title="name" class="w-100">
-                        <a href="javascript:void()" @click="imageDelete(gallery.id)">Remove</a>
-                    </b-col>
-                    <b-col xl="2" lg="3" md="4">
-                        <input type="file" class="custom-file-input" id="file" ref="file" @change="handleFileObject()">
-                        <b-button variant="secondary" onclick="document.getElementById('file').click()">Add</b-button>
+                        <img :src="gallery.path" :alt="name" :title="name" class="w-100" @click="updateVariantPicture(gallery.id)">
                     </b-col>
                 </b-row>
             </b-modal>
@@ -214,6 +209,7 @@ export default {
             collections: [],
             selectedCollections: [],
             file: null,
+            selectedVariantId: null,
             galleries: []
         }
     },
@@ -343,6 +339,7 @@ export default {
                 colors.forEach(color => {
                     sizes.forEach(size => {
                         let exists = this.variantData.filter(x => x.variant_value1 == color.id && x.variant_value2 == size.id)
+                        console.log(exists);
                         this.variantTableData.push({
                             id: exists.length > 0 ? exists[0].id : null,
                             variant_type1: color.name,
@@ -351,7 +348,8 @@ export default {
                             variant_value2: size.id,
                             price: exists.length > 0 ? exists[0].price : 0,
                             qty: exists.length > 0 ? exists[0].qty : 0,
-                            status: exists.length > 0 ? exists[0].status : 1
+                            status: exists.length > 0 ? exists[0].status : 1,
+                            image: exists[0].image
                         });
                     });
                 });
@@ -364,7 +362,8 @@ export default {
                         variant_value2: '',
                         price: 0,
                         qty: 0,
-                        status: 1
+                        status: 1,
+                        image: null
                     }
                 });
             } else if(sizes.length > 0) {
@@ -376,7 +375,8 @@ export default {
                         variant_value2: '',
                         price: 0,
                         qty: 0,
-                        status: 1
+                        status: 1,
+                        image: null
                     }
                 });
             }
@@ -439,7 +439,7 @@ export default {
                     const { data } = await ProductAPI.imageRemove({ id: this.id, gallery_id: id }); 
                     alert(data.message);
                     if(data.success) {
-                        this.loadData()
+                        this.loadData();
                     }
                 }
             } catch (error) {
@@ -491,7 +491,26 @@ export default {
             } catch (error) {
                 alert(error);
             }
-        }
+        },
+        changeVariantPicture(id) {
+            this.selectedVariantId = id;
+            this.$refs['modal-gallery'].show();
+        },
+        async updateVariantPicture(id) {
+            try {
+                const { data } = await ProductAPI.variantImageUpdate({
+                    id: this.selectedVariantId,
+                    gallery_id: id
+                });
+                alert(data.message);
+                if(data.success) {
+                    this.$refs['modal-gallery'].hide();
+                    this.loadData()
+                }
+            } catch (error) {
+                alert(error);
+            }
+        },
     }
 }
 </script>
