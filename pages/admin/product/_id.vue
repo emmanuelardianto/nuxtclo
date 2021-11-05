@@ -104,6 +104,7 @@
                         selectable
                         @row-selected="onRowSelected"
                         v-if="variantTableData.length > 0"
+                        ref="variantTableData"
                         >
                         <template #cell(image)="data">
                             <div><img :src="data.item.image ? data.item.image.path : 'https://via.placeholder.com/50?text=no%20image'" style="width: 50px" alt="no image" @click="changeVariantPicture(data.item.id)" /></div>
@@ -504,9 +505,11 @@ export default {
                 });
                 alert(data.message);
                 if(data.success) {
-                    this.$refs['modal-gallery'].hide();
-                    this.loadData()
+                    this.$refs['modal-gallery'].toggle();
                 }
+                const x  = await this.loadData();
+                this.generateVariant();
+                this.$refs.variantTableData.refresh();
             } catch (error) {
                 alert(error);
             }
