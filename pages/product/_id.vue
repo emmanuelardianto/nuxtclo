@@ -3,8 +3,8 @@
     <BaseBreadcrumb class="mb-5" />
     <b-row>
         <b-col cols="12" xl="1" lg="1" class="d-none d-md-none d-lg-block d-xl-block">
-            <div class="thumbnail" :class="slide == index ? 'active' : ''" v-for="(item, index) in images" :key="index" @click="slide = index">
-                <img :src="item" class="w-100" />
+            <div class="thumbnail" :class="slide == index ? 'active' : ''" v-for="(item, index) in product.galleries" :key="index" @click="slide = index">
+                <img :src="item.path" class="w-100" />
             </div>
         </b-col>
         <b-col cols="12" xl="7" lg="7" md="12" class="mb-5">
@@ -15,7 +15,7 @@
                 @sliding-start="onSlideStart"
                 @sliding-end="onSlideEnd"
                 >
-                <b-carousel-slide v-for="(item, index) in images" :key="index" :img-src="item"></b-carousel-slide>
+                <b-carousel-slide v-for="(item, index) in product.galleries" :key="index" :img-src="item.path"></b-carousel-slide>
             </b-carousel>
         </b-col>
         <b-col cols="12" lg="4" md="12">

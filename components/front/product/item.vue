@@ -1,6 +1,6 @@
 <template>
     <a :href="'/product/' + product.slug " class="product-item mb-5">
-        <img :src="require('~/assets/front/product-01.webp')" :title="product.name" :alt="product.name" class="w-100 mb-2" />
+        <img :src="defaultImage(product.galleries[0])" :title="product.name" :alt="product.name" class="w-100 mb-2" />
         <div class="mb-2">
             <div class="color" style="background: #F00;"></div>
             <div class="color" style="background: #0F0;"></div>
@@ -39,6 +39,12 @@ export default {
                 currency: 'JPY',
             });
             return formatter.format(parseInt(price));
+        },
+        defaultImage(image) {
+            if(image)
+                return image.path;
+            
+            return 'https://via.placeholder.com/150/FFFF00/000000?Text=no%2image';
         }
     }
 }

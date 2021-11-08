@@ -14,7 +14,7 @@
                       <div v-if="wishlists && wishlists.length > 0">
                           <b-row v-for="wishlist in wishlists" :key="wishlist.id" class="py-3 border-bottom">
                             <b-col cols="3">
-                                <img :src="require('~/assets/front/product-01.webp')" :alt="wishlist.product.name" class="w-100">
+                                <img :src="defaultImage(wishlist.product.galleries[0])" :alt="wishlist.product.name" class="w-100">
                             </b-col>
                             <b-col cols="6">
                                 <h5>{{ wishlist.product.name }}</h5>
@@ -83,6 +83,12 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+        },
+        defaultImage(image) {
+            if(image)
+                return image.path;
+            
+            return 'https://via.placeholder.com/150/FFFF00/000000?Text=no%2image';
         }
     }
 }
